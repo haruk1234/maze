@@ -6,6 +6,8 @@
     </head>
     <body>
         <div>
+            <button onclick="makemaze(10,10);mkmazeimg(maze)">generate</button><br>
+            <img id="output" style="width: 30%;image-rendering: pixelated;">
         </div>
     </body>
 </html>
@@ -14,20 +16,24 @@
     function makemaze(x,y) { // size x,y
         maze = Array.from(Array(y*2+1),_=>Array(x*2+1).fill(0));
         maze[Math.floor(Math.random()*y)*2+1][Math.floor(Math.random()*x)*2+1] = 1
-        cnt = 0
-        while (cnt<100) {
-            cnt++
+        while (searchwall(x,y)) {
             for (let ly=0;ly<y;ly++) {
                 for (let lx=0;lx<x;lx++) {
                     ra = searcharound(lx,ly,x,y)
-                /// console.log(ra)
                     makenewroad(lx,ly,ra)
-                    if (ra.length>0) {
-                    }
                 }
             }
         }
-        console.table(maze)
+    }
+    function searchwall(x,y) {
+        for (let ly=0;ly<y;ly++) {
+            for (let lx=0;lx<x;lx++) {
+                if (maze[ly*2+1][lx*2+1]==0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     function searcharound(cx,cy,x,y) {
         ax = cx*2+1
@@ -52,14 +58,12 @@
     }
     function makenewroad(cx,cy,ard) { // ard - around
         if (ard.length<1) {
-            return;
+            return false;
         }
         ax = cx*2+1
         ay = cy*2+1
-        console.log(cx,cy,ard)
 
         card = ard[Math.floor(Math.random()*ard.length)] // card - chose around
-        console.log(card)
         if (card==1) {
             maze[ay-2][ax]=1
             maze[ay-1][ax]=1
@@ -76,7 +80,26 @@
             maze[ay][ax+2]=1
             maze[ay][ax+1]=1
         }
+        return true;
     }
+
+function mkmazeimg(maze) {
+    y = maze.length
+    x = maze[0].length
+    let iarr = new Uint8ClampedArray(x*y*4);
+    for (let iy = 0; iy < y; iy++) {
+        for (let ix = 0; ix < x; ix++) {
+            let index = (iy*x+ix)*4; // index of position [ix,iy]
+            iarr[index+0] = maze[iy][ix]*250; // Red
+            iarr[index+1] = maze[iy][ix]*250; // Green
+            iarr[index+2] = maze[iy][ix]*250; // Blue
+            iarr[index+3] = 255; // Alpha
+        }
+    }
+    let co = document.createElement("canvas");
+    co.height=y;co.width=x;co.getContext('2d').putImageData(new ImageData(iarr,x,y),0,0);
+    document.getElementById("output").src = co.toDataURL('image/png');
+}
 
 
 </script>
