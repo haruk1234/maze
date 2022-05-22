@@ -24,12 +24,6 @@
         <div id="control_area" class="notselectable"><!--control-->
             <center>
                 <div id="control">
-                    <ul style="width: 100%;padding: 0;margin: 0;">
-                        <li style="display: inline-block;"><center><p><span id="show_pos"></span></p></center></li>
-                        <li style="display: inline-block;"><center><p>FPS: <span id="show_fps"></span></p></center></li>
-                        <li style="display: inline-block;"><center><p><span id="block_pos"></span></p></center></li>
-                        <li style="display: inline-block;"><center><p><span id="debug"></span></p></center></li>
-                    </ul>
                     <details id="control_details" open="true">
                         <summary style="font-size: 80%;">control</summary>
                         <table style="width: 100%;">
@@ -79,6 +73,17 @@
                 </div>
             </center>
         </div>
+        <div id="information_area" class="notselectable"><!--control-->
+            <center>
+                <div id="control">
+                    <ul style="width: 100%;padding: 0;margin: 0;">
+                        <li style="display: inline-block;"><center><p>FPS: <span id="show_fps"></span></p></center></li>
+                        <li style="display: inline-block;"><center><p>座標: <span id="show_pos"></span></p></center></li>
+                        <li style="display: inline-block;"><center><p>ゴールまでの距離<span id="len_togoal"></span></p></center></li>
+                    </ul>
+                </div>
+            </center>
+        </div>
         <div id="footer" class="notselectable">
             <center>
                 <pre>2022 haruk1234</pre>
@@ -88,8 +93,10 @@
 </html>
 <script src="makemaze.js"></script>
 <script>
-    
-    makemaze(10,10);
+    var mazesize = [10,10]
+    makemaze(mazesize[0],mazesize[1]);
+    var mazestart = [1,1];
+    var mazegoal = [maze[0].length-2,maze.length-2];
     mazeto3d();
 
 let cam_property = [
@@ -265,6 +272,9 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     function length3d(pos) {
         return Math.sqrt((pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2+(pos[0][2]-pos[1][2])**2);
     }
+    function length2d(pos) {
+        return Math.sqrt( (pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2 )
+    }
 
     function VCProduct(a,b) { // Vector-Cross-Product ベクトルの外積
         return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
@@ -354,6 +364,9 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             cam_property[0][0] = bfx
             cam_property[0][1] = bfy
         }
+        document.getElementById("show_pos").innerHTML = Math.floor(cam_property[0][0]*100)/100+","+Math.floor(cam_property[0][1]*100)/100
+        document.getElementById("len_togoal").innerHTML = Math.floor(length2d([cam_property[0],mazegoal])*100)/100
+        
     }
 
     function sin(z) {
@@ -503,6 +516,13 @@ p {
     border-radius: 5px;
     background: rgba(255,255,255,0.6);
     width: 500px;
+}
+#information_area {
+    width: 100%;
+    bottom: 25px;
+    left: 0px;
+    position: absolute;
+    font-size: 95%;
 }
 </style>
 
