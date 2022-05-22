@@ -202,7 +202,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             normal = VNormalized(VCProduct(v12,v13)); //法線
             angl = VIProduct(vl,normal); // 0<=normal<=1
-            light = (Math.max(angl,angl*0.2)*0.9+0.3)*(300/(polygons[i][7]+300));
+            light = (Math.max(angl,angl*0.2)*0.9+0.3)*(200/(polygons[i][7]+200));
             
             xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
             xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
