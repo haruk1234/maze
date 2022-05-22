@@ -89,17 +89,16 @@
 <script src="makemaze.js"></script>
 <script>
     
-    makemaze(5,5);
+    makemaze(10,10);
     mazeto3d();
 
 let cam_property = [
-    [1.5,1.5,0.5],//camera position [x,y,z] (block)
-    [220,0,10],//camera angle [h,v,scale] (degree)
+    [1.2,1.2,0.5], //camera position [x,y,z] (block)
+    [45,0,10], //camera angle [h,v,scale] (degree)
     [10,10],
-    [640,480],//display
+    [640,480], //display
 ]
 var startTime = Date.now();
-
 
 let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
         "112 63": [112,63,16,9],
