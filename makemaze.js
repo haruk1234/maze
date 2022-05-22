@@ -1,5 +1,4 @@
 
-    var scene = {};
     var maze = []
     function makemaze(x,y) { // size x,y
         maze = Array.from(Array(y*2+1),_=>Array(x*2+1).fill(0));

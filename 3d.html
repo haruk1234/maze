@@ -21,7 +21,19 @@
         <div id="img_area">
             <img id="imgOutput" style="display: block;image-rendering: pixelated;">
         </div>
-        <div id="control_area" class="notselectable"><!--control-->
+        <div id="startmenu_area" class="notselectable"><!--control-->
+            <center>
+                <div id="startmenu">
+                    <div id="title">
+                        <h1>3D MAZE</h1>
+                    </div>
+                    <div id="s_buttonarea">
+                        <button onclick="startmaze()" class="s_button">start</button>
+                    </div>
+                </div>
+            </center>
+        </div>
+        <div id="control_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
                     <details id="control_details" open="true">
@@ -59,21 +71,12 @@
                                 </td>
                                 <td></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td><center>シーン</center></td>
-                                <td>
-                                    <select id="scene">
-                                    </select>
-                                </td>
-                                <td></td>
-                            </tr>
                         </table>
                     </details>
                 </div>
             </center>
         </div>
-        <div id="information_area" class="notselectable"><!--control-->
+        <div id="information_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
                     <ul style="width: 100%;padding: 0;margin: 0;">
@@ -91,17 +94,35 @@
         </div>
     </body>
 </html>
+<script>
+    var scene = {};
+</script>
+<script src="startmenu.js"></script>
 <script src="makemaze.js"></script>
 <script>
+
     var mazesize = [10,10]
     makemaze(mazesize[0],mazesize[1]);
     var mazestart = [1,1];
     var mazegoal = [maze[0].length-2,maze.length-2];
     mazeto3d();
 
+function startmaze() {
+    changescene("maze")
+    obj = addLen(obj);
+    obj = sortP(obj);
+    document.getElementById("startmenu_area").style.visibility = "hidden"
+    document.getElementById("control_area").style.visibility = "visible"
+    document.getElementById("information_area").style.visibility = "visible"
+    cam_property[0] = [1.2,1.2,0.5]
+    cam_property[1] = [45,0,10]
+}
+
+var flmove = [[]]
+flmove = maze
 let cam_property = [
     [1.2,1.2,0.5], //camera position [x,y,z] (block)
-    [45,0,10], //camera angle [h,v,scale] (degree)
+    [220,10,10], //camera angle [h,v,scale] (degree)
     [10,10],
     [640,480], //display
 ]
@@ -146,22 +167,11 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
     
     {
-        // make display resolution list
-        let drsel = document.getElementById("scene");
-        let dlkeys = Object.keys(scene);
-        for (i=0;i<dlkeys.length;i++) {
-            oel = document.createElement("option");
-            oel.value = dlkeys[i];
-            oel.textContent = dlkeys[i];
-            drsel.appendChild(oel);
-        }
-        drsel.value = "maze";
-        scenename = drsel.value;
-        var obj = scene[scenename][1];
-        drsel.onchange = event => {
-            scenename = drsel.value;
+        changescene("title")
+        function changescene(name) {
+            scenename = name;
             obj = scene[scenename][1];
-        };
+        }
     }
 
     let cframe = 0;
@@ -360,10 +370,10 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         cam_property[0][1] += los[1];
         let cx = cam_property[0][0]
         let cy = cam_property[0][1]
-        if (maze[Math.floor(cy)][Math.floor(bfx)]==0) {
+        if (cy<flmove.length&&bfx<flmove[0].length&&flmove[Math.floor(cy)][Math.floor(bfx)]==0) {
             cam_property[0][1] = bfy
         }
-        if (maze[Math.floor(bfy)][Math.floor(cx)]==0) {
+        if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
             cam_property[0][0] = bfx
         }
         document.getElementById("show_pos").innerHTML = Math.floor(cam_property[0][0]*100)/100+","+Math.floor(cam_property[0][1]*100)/100
@@ -524,6 +534,37 @@ p {
     left: 0px;
     position: absolute;
     font-size: 95%;
+}
+#startmenu_area {
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    font-size: 95%;
+}
+#startmenu {
+    margin: 0px;
+    margin-top: 70px;
+    width: calc(100vw - 100px);
+    height: calc(100vh - 140px);
+    background: rgba(212, 212, 220, 0.6);
+    text-align: left;
+}
+#title {
+    font-size: 25px;
+    padding: 50px;
+}
+#s_buttonarea {
+    padding-left: 100px;
+    bottom: 20px;
+    right: 70px;
+    position: absolute;
+}
+.s_button {
+    background: rgba(255,255,255,0.7);
+    font-size: 20px;
+    width: 200px;
+    height: 50px;
 }
 </style>
 
