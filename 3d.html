@@ -33,16 +33,16 @@
                                 <th style="width: 20%;"></th>
                             </tr>
                             <tr>
-                                <td><button onclick="move(0.2)" style="width: 100%;">↑</button></td>
+                                <td><button onclick="move(0.3)" style="width: 100%;">↑</button></td>
                                 <td><center>Move</center></td>
                                 <td><center></center></td>
-                                <td><button onclick="move(-0.2)" style="width: 100%;">↓</button></td>
+                                <td><button onclick="move(-0.3)" style="width: 100%;">↓</button></td>
                             </tr>
                             <tr>
-                                <td><button onclick="cam_property[1][0]-=5" style="width: 100%;">←</button></td>
+                                <td><button onclick="cam_property[1][0]-=7" style="width: 100%;">←</button></td>
                                 <td><center>H</center></td>
                                 <td><center></center></td>
-                                <td><button onclick="cam_property[1][0]+=5" style="width: 100%;">→</button></td>
+                                <td><button onclick="cam_property[1][0]+=7" style="width: 100%;">→</button></td>
                             </tr>
                             <tr>
                                 <td><button onclick="cam_property[1][1]+=3" style="width: 100%;">↑</button></td>
@@ -136,7 +136,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
-        drsel.value = "QQVGA";
+        drsel.value = "QVGA";
         cam_property[3] = display_list[drsel.value];
         resizeImg();
         drsel.onchange = event => {
@@ -360,9 +360,11 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         cam_property[0][1] += los[1];
         let cx = cam_property[0][0]
         let cy = cam_property[0][1]
-        if (maze[Math.floor(cy)][Math.floor(cx)]==0) {
-            cam_property[0][0] = bfx
+        if (maze[Math.floor(cy)][Math.floor(bfx)]==0) {
             cam_property[0][1] = bfy
+        }
+        if (maze[Math.floor(bfy)][Math.floor(cx)]==0) {
+            cam_property[0][0] = bfx
         }
         document.getElementById("show_pos").innerHTML = Math.floor(cam_property[0][0]*100)/100+","+Math.floor(cam_property[0][1]*100)/100
         document.getElementById("len_togoal").innerHTML = Math.floor(length2d([cam_property[0],mazegoal])*100)/100
@@ -411,8 +413,8 @@ document.onkeyup = function(e) {
 };
 let keyw = {}
 {
-    keyw[87] = ()=>move(0.1);
-    keyw[83] = ()=>move(-0.1);
+    keyw[87] = ()=>move(0.2);
+    keyw[83] = ()=>move(-0.2);
     keyw[65] = ()=>cam_property[1][0]-=5;
     keyw[68] = ()=>cam_property[1][0]+=5;
     keyw[82] = ()=>cam_property[1][1]+=2;
@@ -429,7 +431,7 @@ function keyinput() {
         }
     }
 }
-setInterval(keyinput,50)
+setInterval(keyinput,65)
 
 // resize window
     function resizeImg() {

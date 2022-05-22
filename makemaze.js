@@ -77,9 +77,9 @@
         scene["maze"] = [[0],[]];
         fmaze = scene["maze"][1];
         c = [212,210,254];
-        fc = [212,210,254];
+        fc = [242,240,254];
         sfc = [212,210,25];
-        efc = [82,40,200];
+        efc = [112,70,220];
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
                 if (maze[ly][lx]==0) {
