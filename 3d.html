@@ -344,8 +344,16 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
 
     function move(l) {
         los = rotate2d([0,l],-cam_property[1][0]);
+        bfx = cam_property[0][0];
+        bfy = cam_property[0][1];
         cam_property[0][0] += los[0];
         cam_property[0][1] += los[1];
+        let cx = cam_property[0][0]
+        let cy = cam_property[0][1]
+        if (maze[Math.floor(cy)][Math.floor(cx)]==0) {
+            cam_property[0][0] = bfx
+            cam_property[0][1] = bfy
+        }
     }
 
     function sin(z) {
