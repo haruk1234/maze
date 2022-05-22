@@ -1,0 +1,519 @@
+<!-- made by haruk1234, 2022 -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>3D</title>
+        <meta charset="utf-8">
+
+        <meta name="description" content="3D">
+        <meta name="application-name" content="HarukSite - 3D"/>
+        <meta name="twitter:site" content="@haruk_1234_">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image:src" content="https://haruk1234.github.io/web3d/3d.png">
+        <meta cam_property="og:type" content="website">
+        <meta cam_property="og:title" content="3D - haruk1234">
+        <meta cam_property="og:description" content="3Dの世界を移動できます">
+        <meta cam_property="og:site_name" content="HarukSite">
+        <meta cam_property="og:image" content="https://haruk1234.github.io/web3d/3d.png">
+
+    </head>
+    <body>
+        <div id="img_area">
+            <img id="imgOutput" style="display: block;image-rendering: pixelated;">
+        </div>
+        <div id="control_area" class="notselectable"><!--control-->
+            <center>
+                <div id="control">
+                    <ul style="width: 100%;padding: 0;margin: 0;">
+                        <li style="display: inline-block;"><center><p><span id="show_pos"></span></p></center></li>
+                        <li style="display: inline-block;"><center><p>FPS: <span id="show_fps"></span></p></center></li>
+                        <li style="display: inline-block;"><center><p><span id="block_pos"></span></p></center></li>
+                        <li style="display: inline-block;"><center><p><span id="debug"></span></p></center></li>
+                    </ul>
+                    <details id="control_details" open="true">
+                        <summary style="font-size: 80%;">control</summary>
+                        <table style="width: 100%;">
+                            <tr>
+                                <th style="width: 20%;"></th>
+                                <th></th>
+                                <th style="width: 20%;"></th>
+                            </tr>
+                            <tr>
+                                <td><button onclick="move(0.2)" style="width: 100%;">↑</button></td>
+                                <td><center>Move</center></td>
+                                <td><center></center></td>
+                                <td><button onclick="move(-0.2)" style="width: 100%;">↓</button></td>
+                            </tr>
+                            <tr>
+                                <td><button onclick="cam_property[1][0]-=5" style="width: 100%;">←</button></td>
+                                <td><center>H</center></td>
+                                <td><center></center></td>
+                                <td><button onclick="cam_property[1][0]+=5" style="width: 100%;">→</button></td>
+                            </tr>
+                            <tr>
+                                <td><button onclick="cam_property[1][1]+=3" style="width: 100%;">↑</button></td>
+                                <td><center>V</center></td>
+                                <td><center></center></td>
+                                <td><button onclick="cam_property[1][1]-=3" style="width: 100%;">↓</button></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><center>解像度</center></td>
+                                <td>
+                                    <select id="resolution">
+                                    </select>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><center>シーン</center></td>
+                                <td>
+                                    <select id="scene">
+                                    </select>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </details>
+                </div>
+            </center>
+        </div>
+        <div id="footer" class="notselectable">
+            <center>
+                <pre>2022 haruk1234</pre>
+            </center>
+        </div>
+    </body>
+</html>
+<script src="makemaze.js"></script>
+<script>
+    
+    makemaze(5,5);
+    mazeto3d();
+
+let cam_property = [
+    [1.5,1.5,0.5],//camera position [x,y,z] (block)
+    [220,0,10],//camera angle [h,v,scale] (degree)
+    [10,10],
+    [640,480],//display
+]
+var startTime = Date.now();
+
+
+let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
+        "112 63": [112,63,16,9],
+        "QQVGA": [160,120,4,3],
+        "QVGA": [320,240,4,3],
+        "HVGA": [480,320,3,2],
+        "VGA": [640,480,4,3],
+        "SVGA": [800,600,4,3],
+        "XGA": [1024,768,4,3],
+        "HD": [1280,720,16,9],
+        "SXGA": [1280,1024,5,4],
+        "UXGA": [1600,1200,4,3],
+        "FHD": [1920,1080,16,9],
+        "4K": [3840,2160,16,9],
+        "8K": [7680,4320,16,9],
+    };
+
+    {
+        // make display resolution list
+        let drsel = document.getElementById("resolution");
+        let dlkeys = Object.keys(display_list);
+        for (i=0;i<dlkeys.length;i++) {
+            oel = document.createElement("option");
+            if (i==0) {
+                cam_property[3] = display_list[dlkeys[i]];
+            }
+            oel.value = dlkeys[i];
+            oel.textContent = dlkeys[i];
+            drsel.appendChild(oel);
+        }
+        drsel.value = "QQVGA";
+        cam_property[3] = display_list[drsel.value];
+        resizeImg();
+        drsel.onchange = event => {
+            cam_property[3] = display_list[drsel.value];
+            resizeImg();
+        };
+    }
+    
+    {
+        // make display resolution list
+        let drsel = document.getElementById("scene");
+        let dlkeys = Object.keys(scene);
+        for (i=0;i<dlkeys.length;i++) {
+            oel = document.createElement("option");
+            oel.value = dlkeys[i];
+            oel.textContent = dlkeys[i];
+            drsel.appendChild(oel);
+        }
+        drsel.value = "maze";
+        scenename = drsel.value;
+        var obj = scene[scenename][1];
+        drsel.onchange = event => {
+            scenename = drsel.value;
+            obj = scene[scenename][1];
+        };
+    }
+
+    let cframe = 0;
+
+    setTimeout(mkimg,10);
+    function mkimg() {
+        cframe++;
+        x = cam_property[3][0];
+        y = cam_property[3][1];
+        let co = document.createElement("canvas");
+        co.height=y;co.width=x;
+        ctx = co.getContext('2d');
+        let iarr = new Uint8ClampedArray(x*y*4);
+        for (let i = 0; i < x*y; i++) {
+            let index = (i)*4; // index of position [ix,iy]
+            iarr[index+0] = 10; // Red
+            iarr[index+1] = 10; // Green
+            iarr[index+2] = 10; // Blue
+            iarr[index+3] = 255; // Alpha
+        }
+        obj = addLen(obj);
+        if (cframe%2==1) {
+            obj = sortP(obj);
+        }
+        polygons = obj;
+        vl = VNormalized([30,10,50]);
+        for (i=0;i<polygons.length;i++) {
+            t = polygons[i];
+            p1 = pos_3t2d(t[0]);
+            p2 = pos_3t2d(t[1]);
+            p3 = pos_3t2d(t[2]);
+
+            if (p1[2]&&p2[2]&&p3[2]) {
+                continue;
+            }
+
+            v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
+            v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
+            normal = VNormalized(VCProduct(v12,v13)); //法線
+            angl = VIProduct(vl,normal); // 0<=normal<=1
+            light = (Math.max(angl,angl*0.2)*0.9+0.3)*(300/(polygons[i][7]+300));
+            
+            xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
+            xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
+            ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][1]);
+            ymin = Math.max(Math.min(p1[1],p2[1],p3[1]),0);
+
+            dp = [p1,p2,p3];
+            if (t[3][0]==0) {
+                for (iy = ymin; iy < ymax; iy++) {
+                    for (ix = xmin; ix < xmax; ix++) {
+                        if (inclusion([ix,iy],dp)) {
+                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                            iarr[index+0] = t[4][0]*light;
+                            iarr[index+1] = t[5][0]*light;
+                            iarr[index+2] = t[6][0]*light;
+                        }
+                    }
+                }
+            }
+        }
+        ctx.putImageData(new ImageData(iarr,x,y),0,0);
+        document.getElementById("imgOutput").src = co.toDataURL('image/png');
+        fps = (Date.now() - startTime) / 1000;
+        startTime = Date.now();
+        document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
+        setTimeout(mkimg,10);
+    }
+
+
+    function sortP(ps) {
+        
+        psl = ps.length;
+        let sorted = false;
+        let bu;let i=0;
+        while (i<psl) {
+            j=0;jm = psl-i-1;
+            while (j<jm) {
+                if (ps[j][7]<ps[j+1][7]) {
+                    bu = ps[j+1];
+                    ps[j+1] = ps[j];
+                    ps[j] = bu;
+                    sorted = true;
+                }
+                j++;
+            }
+            if (!sorted) {
+                break;
+            }
+            i++;
+        }
+        return ps;
+    }
+    
+    function addLen(ps) {
+        for (let i=0;i<ps.length;i++) {
+            ps[i][7] = squared_length3d([cam_property[0],gcot([ps[i][0],ps[i][1],ps[i][2]])]);
+        }
+        return ps
+    }
+    function gcot(t3ds) { // 三角形の代表座標
+        return [(t3ds[0][0]+t3ds[1][0]+t3ds[2][0])/3,(t3ds[0][1]+t3ds[1][1]+t3ds[2][1])/3,(t3ds[0][2]+t3ds[1][2]+t3ds[2][2])/3];
+    }
+    
+    function squared_length3d(pos) {
+        return (pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2+(pos[0][2]-pos[1][2])**2;
+    }
+    function length3d(pos) {
+        return Math.sqrt((pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2+(pos[0][2]-pos[1][2])**2);
+    }
+
+    function VCProduct(a,b) { // Vector-Cross-Product ベクトルの外積
+        return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    }
+
+    function VIProduct(a,b) { // ベクトルの内積
+        return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    }
+    function VMM3(a) { // ベクトルのマイナス1倍
+        return [-a[0],-a[1],-a[2]];
+    }
+
+    function VNormalized(a) { // ベクトルの正規化
+        l = length3d([[0,0,0],a]);
+        return [a[0]/l,a[1]/l,a[2]/l];
+    }
+
+    function inclusion(p1, carr) { // 三角形の内外判定
+        let a = [carr[0][0]-p1[0],carr[0][1]-p1[1]];
+        let b = [carr[1][0]-p1[0],carr[1][1]-p1[1]];
+        let c = [carr[2][0]-p1[0],carr[2][1]-p1[1]];
+        let ab = a[0]*b[1]-a[1]*b[0];
+        let bc = b[0]*c[1]-b[1]*c[0];
+        let ca = c[0]*a[1]-c[1]*a[0];
+        return ab<=0&&bc<=0&&ca<=0;
+    };
+
+    function pos_3t2d(pos) { // get angle of camera and point
+        let cp = cam_property[0];let ca = cam_property[1];
+        let p1 = [pos[0]-cp[0],pos[1]-cp[1],pos[2]-cp[2]];
+        p1 = rotate3d_z(p1,ca[0]);
+        p1 = rotate3d_x(p1,-ca[1]);
+        let l = Math.abs(14/(p1[1]));
+        let s = cam_property[3][0]/15;
+        let d = [p1[0]*l*s+cam_property[3][0]/2,-p1[2]*l*s+cam_property[3][1]/2];
+        let infront = false;
+        if (p1[1]<0) {infront = true };
+        return [Math.floor(d[0]),Math.floor(d[1]),infront];
+    }
+
+    function rotate3d_x(pos,r_x) { // x軸のみの回転
+        _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
+        r_x = r_x *(Math.PI/180);
+        _x3 = _x1;
+        _y3 = _y1*cos(r_x)-_z1*sin(r_x);
+        _z3 = _y1*sin(r_x)+_z1*cos(r_x);
+        return [_x3,_y3,_z3];
+    }
+    function rotate3d_z(pos,r_z) { // z軸のみの回転
+        _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
+        r_z = r_z *(Math.PI/180);
+        _z3 = _z1;
+        _x3 = _x1*cos(r_z)-_y1*sin(r_z);
+        _y3 = _x1*sin(r_z)+_y1*cos(r_z);
+        return [_x3,_y3,_z3];
+    }
+    function rotate3d(pos,r_x,r_y,r_z) { // 回転
+        _x1 = pos[0];_y = pos[1];_z = pos[2];
+        r_x = r_x *(Math.PI/180);
+        r_y = r_y *(Math.PI/180);
+        r_z = r_z *(Math.PI/180);
+        _y2 = _y*cos(r_x)-_z*sin(r_x);
+        _z1 = _y*sin(r_x)+_z*cos(r_x);
+        _x2 = _x1*cos(r_y)+_z1*sin(r_y);
+        _z3 = -_x1*sin(r_y)+_z1*cos(r_y);
+        _x3 = _x2*cos(r_z)-_y2*sin(r_z);
+        _y3 = _x2*sin(r_z)+_y2*cos(r_z);
+        return [_x3,_y3,_z3];
+    }
+    function rotate2d(pos,r) {
+        var _x = pos[0];_y = pos[1];
+        r = r *(Math.PI/180);
+        var x = _x*cos(r)-_y*sin(r);
+        var y = _x*sin(r)+_y*cos(r);
+        return [x,y];
+    }
+
+    function move(l) {
+        los = rotate2d([0,l],-cam_property[1][0]);
+        cam_property[0][0] += los[0];
+        cam_property[0][1] += los[1];
+    }
+
+    function sin(z) {
+        return Math.sin(z);
+    }
+    function cos(z) {
+        return Math.cos(z);
+    }
+    function sin(z) {
+        z = z%(Math.PI*2);
+        let r = 0;
+        let f = 0;
+        for (n=0;n<10;n++) {
+            r += ( (-1)**n/factonal(2*n+1) ) * ( z**(2*n+1) );
+        }
+        return r;
+    }
+    function cos(z) {
+        z = z%(Math.PI*2);
+        let r = 0;
+        for (n=0;n<10;n++) {
+            r += ( (-1)**n/factonal(2*n) ) * ( z**(2*n) );
+        }
+        return r;
+    }
+    function factonal(n) {
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
+
+
+
+// keyboard
+document.onkeydown = function(e) {
+    keystatus_d[event.keyCode] = true;
+};
+document.onkeyup = function(e) {
+    keystatus_d[event.keyCode] = false;
+};
+let keyw = {}
+{
+    keyw[87] = ()=>move(0.1);
+    keyw[83] = ()=>move(-0.1);
+    keyw[65] = ()=>cam_property[1][0]-=5;
+    keyw[68] = ()=>cam_property[1][0]+=5;
+    keyw[82] = ()=>cam_property[1][1]+=2;
+    keyw[70] = ()=>cam_property[1][1]-=2;
+}
+let keystatus_d = {};
+function keyinput() {
+    keys = Object.keys(keystatus_d);
+    for (i=0;i<keys.length;i++) {
+        if (keystatus_d[keys[i]]) {
+            if (keys[i] in keyw) {
+                keyw[keys[i]]();
+            }
+        }
+    }
+}
+setInterval(keyinput,50)
+
+// resize window
+    function resizeImg() {
+        dw = cam_property[3][0];
+        dh = cam_property[3][1];
+        let bottom_area = 17;
+        let ww = window.innerWidth;
+        let rw = 0;let rh = 0;let vm = 1;let hm = 1;
+        let wh = window.innerHeight-bottom_area-vm;
+        if (ww*dh>wh*dw) {
+            rw = wh*dw/dh;
+            rh = wh;
+            hm += (ww-rw)/2;
+        }
+        else {
+            rw = ww;
+            rh = ww*dh/dw;
+            vm += (wh-rh)/2;
+        }
+        document.getElementById("imgOutput").style.marginTop = (vm).toString()+"px";
+        document.getElementById("imgOutput").style.marginBottom = (vm).toString()+"px";
+        document.getElementById("imgOutput").style.marginLeft = (hm).toString()+"px";
+        document.getElementById("imgOutput").style.marginRight = (hm).toString()+"px";
+        document.getElementById("imgOutput").style.width = (rw).toString()+"px";
+        document.getElementById("imgOutput").style.height = (rh).toString()+"px";
+    };
+window.onresize = resizeImg;
+resizeImg(); // first resize
+
+</script>
+<style>
+.notselectable {
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+#footer {
+    position: absolute;
+    font-size: 10px;
+    width: 100%;
+    height: 17px;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(171,243,231,0.6);
+}
+pre {
+    display: inline;
+    margin: 0;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+body {
+    overflow: hidden;
+    -ms-overflow-style: none;    /* IE, Edge 対応 */
+    scrollbar-width: none;       /* Firefox 対応 */
+    background: rgb(0,0,0);
+}
+
+p {
+    margin: 3px;
+}
+
+#img_area {
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+#control_area {
+    width: 100%;
+    top: 10px;
+    left: 0px;
+    position: absolute;
+    font-size: 95%;
+}
+
+#control {
+    padding: 5px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.6);
+    width: 500px;
+}
+</style>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
+<script>
+var firebaseConfig = {
+    apiKey: "AIzaSyDLLs9K4E9UVTmP2XaHhn_UzXtlN1nCDXc",
+    authDomain: "github-b0aea.firebaseapp.com",
+    projectId: "github-b0aea",
+    storageBucket: "github-b0aea.appspot.com",
+    messagingSenderId: "539611850738",
+    appId: "1:539611850738:web:57da8d1bd3bcf69a7a2d6b",
+    measurementId: "G-F2XPLPFDJ5"
+};
+firebase.initializeApp(firebaseConfig);
+if (location.hostname == "haruk1234.github.io") {
+    firebase.analytics();
+}
+</script>
