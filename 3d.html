@@ -23,8 +23,16 @@
         </div>
         <div id="startmenu_area" class="notselectable"><!--control-->
             <center>
-                <div id="s_buttonarea">
+                <div class="s_buttonarea">
                     <button onclick="startmaze()" class="s_button">start</button>
+                </div>
+            </center>
+        </div>
+        <div id="goalmenu_area" class="notselectable"><!--control-->
+            <center>
+                <div class="s_buttonarea">
+                    <button onclick="startmaze()" class="s_button">restart</button>
+                    <button onclick="makemaze(mazesize[0],mazesize[1]);mazeto3d();startmaze()" class="s_button">new game</button>
                 </div>
             </center>
         </div>
@@ -92,7 +100,7 @@
 <script>
     var scene = {};
 </script>
-<script src="startmenu.js"></script>
+<script src="obj.js"></script>
 <script src="makemaze.js"></script>
 <script>
 
@@ -109,6 +117,7 @@ function startmaze() {
     cam_property[0] = [1.2,1.2,0.5];
     cam_property[1] = [45,0,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
+    document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "visible";
     document.getElementById("information_area").style.visibility = "visible";
 }
@@ -120,6 +129,19 @@ function startmenu() {
     cam_property[0] = [0,-4,1.2];
     cam_property[1] = [230,2,10];
     document.getElementById("startmenu_area").style.visibility = "visible";
+    document.getElementById("goalmenu_area").style.visibility = "hidden";
+    document.getElementById("control_area").style.visibility = "hidden";
+    document.getElementById("information_area").style.visibility = "hidden";
+}
+
+function startgoal() {
+    drsel.value = "HD";
+    despl();
+    changescene("goal");
+    cam_property[0] = [-1,-8,1.2];
+    cam_property[1] = [260,2,10];
+    document.getElementById("startmenu_area").style.visibility = "hidden";
+    document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
 }
@@ -381,13 +403,16 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         bfy = cam_property[0][1];
         cam_property[0][0] += los[0];
         cam_property[0][1] += los[1];
-        let cx = cam_property[0][0]
-        let cy = cam_property[0][1]
+        let cx = cam_property[0][0];
+        let cy = cam_property[0][1];
         if (cy<flmove.length&&bfx<flmove[0].length&&flmove[Math.floor(cy)][Math.floor(bfx)]==0) {
             cam_property[0][1] = bfy
         }
         if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
             cam_property[0][0] = bfx
+        }
+        if (Math.floor(cam_property[0][0])==mazegoal[0]&&Math.floor(cam_property[0][1])==mazegoal[1]) {
+            startgoal()
         }
         document.getElementById("show_pos").innerHTML = Math.floor(cam_property[0][0]*100)/100+","+Math.floor(cam_property[0][1]*100)/100
         document.getElementById("len_togoal").innerHTML = Math.floor(length2d([cam_property[0],mazegoal])*100)/100
@@ -548,7 +573,7 @@ p {
     position: absolute;
     font-size: 95%;
 }
-#s_buttonarea {
+.s_buttonarea {
     position: absolute;
     bottom: 0px;
     height: 100px;
@@ -559,6 +584,12 @@ p {
     font-size: 20px;
     width: 200px;
     height: 50px;
+}
+.s_button:hover {
+    background: rgba(215, 215, 215, 0.7);
+}
+.s_button:active {
+    background: rgba(168, 168, 168,0.7);
 }
 </style>
 
