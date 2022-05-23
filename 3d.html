@@ -23,17 +23,12 @@
         </div>
         <div id="startmenu_area" class="notselectable"><!--control-->
             <center>
-                <div id="startmenu">
-                    <div id="title">
-                        <h1>3D MAZE</h1>
-                    </div>
-                    <div id="s_buttonarea">
-                        <button onclick="startmaze()" class="s_button">start</button>
-                    </div>
+                <div id="s_buttonarea">
+                    <button onclick="startmaze()" class="s_button">start</button>
                 </div>
             </center>
         </div>
-        <div id="control_area" class="notselectable" style="visibility: hidden;"><!--control-->
+        <div id="control_area" class="notselectable"><!--control-->
             <center>
                 <div id="control">
                     <details id="control_details" open="true">
@@ -76,7 +71,7 @@
                 </div>
             </center>
         </div>
-        <div id="information_area" class="notselectable" style="visibility: hidden;"><!--control-->
+        <div id="information_area" class="notselectable"><!--control-->
             <center>
                 <div id="control">
                     <ul style="width: 100%;padding: 0;margin: 0;">
@@ -108,24 +103,42 @@
     mazeto3d();
 
 function startmaze() {
-    changescene("maze")
-    obj = addLen(obj);
-    obj = sortP(obj);
-    document.getElementById("startmenu_area").style.visibility = "hidden"
-    document.getElementById("control_area").style.visibility = "visible"
-    document.getElementById("information_area").style.visibility = "visible"
-    cam_property[0] = [1.2,1.2,0.5]
-    cam_property[1] = [45,0,10]
+    changescene("maze");
+    drsel.value = "QVGA";
+    despl();
+    cam_property[0] = [1.2,1.2,0.5];
+    cam_property[1] = [45,0,10];
+    document.getElementById("startmenu_area").style.visibility = "hidden";
+    document.getElementById("control_area").style.visibility = "visible";
+    document.getElementById("information_area").style.visibility = "visible";
+}
+
+function startmenu() {
+    drsel.value = "HD";
+    despl();
+    changescene("title");
+    cam_property[0] = [0,-4,1.2];
+    cam_property[1] = [230,2,10];
+    document.getElementById("startmenu_area").style.visibility = "visible";
+    document.getElementById("control_area").style.visibility = "hidden";
+    document.getElementById("information_area").style.visibility = "hidden";
+}
+
+window.onload = function() {
+    startmenu();
+    setTimeout(mkimg,10);
 }
 
 var flmove = [[]]
 flmove = maze
 let cam_property = [
-    [1.2,1.2,0.5], //camera position [x,y,z] (block)
-    [220,10,10], //camera angle [h,v,scale] (degree)
+    [0,0,0], //camera position [x,y,z] (block)
+    [0,0,0], //camera angle [h,v,scale] (degree)
     [10,10],
     [640,480], //display
 ]
+
+
 var startTime = Date.now();
 
 let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
@@ -144,9 +157,10 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
        // "8K": [7680,4320,16,9],
     };
 
+    var drsel;
     {
         // make display resolution list
-        let drsel = document.getElementById("resolution");
+        drsel = document.getElementById("resolution");
         let dlkeys = Object.keys(display_list);
         for (i=0;i<dlkeys.length;i++) {
             oel = document.createElement("option");
@@ -160,23 +174,24 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         drsel.value = "QVGA";
         cam_property[3] = display_list[drsel.value];
         resizeImg();
-        drsel.onchange = event => {
+        drsel.onchange = despl()
+        function despl() {
             cam_property[3] = display_list[drsel.value];
             resizeImg();
         };
     }
     
     {
-        changescene("title")
         function changescene(name) {
+            cframe = 0;
             scenename = name;
             obj = scene[scenename][1];
         }
     }
 
+
     let cframe = 0;
 
-    setTimeout(mkimg,10);
     function mkimg() {
         cframe++;
         x = cam_property[3][0];
@@ -193,11 +208,11 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             iarr[index+3] = 255; // Alpha
         }
         obj = addLen(obj);
-        if (cframe%2==1) {
+        if (cframe%5==0) {
             obj = sortP(obj);
         }
         polygons = obj;
-        vl = VNormalized([30,10,50]);
+        vl = VNormalized([40,10,50]);
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
@@ -212,7 +227,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             normal = VNormalized(VCProduct(v12,v13)); //法線
             angl = VIProduct(vl,normal); // 0<=normal<=1
-            light = (Math.max(angl,angl*0.2)*0.9+0.3)*(200/(polygons[i][7]+200));
+            light = (Math.max(angl,angl*0.2)*0.9+0.4)*(200/(polygons[i][7]+200));
             
             xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
             xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
@@ -241,9 +256,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         setTimeout(mkimg,10);
     }
 
-
     function sortP(ps) {
-        
         psl = ps.length;
         let sorted = false;
         let bu;let i=0;
@@ -535,30 +548,11 @@ p {
     position: absolute;
     font-size: 95%;
 }
-#startmenu_area {
-    width: 100%;
-    top: 0px;
-    left: 0px;
-    position: absolute;
-    font-size: 95%;
-}
-#startmenu {
-    margin: 0px;
-    margin-top: 70px;
-    width: calc(100vw - 100px);
-    height: calc(100vh - 140px);
-    background: rgba(212, 212, 220, 0.6);
-    text-align: left;
-}
-#title {
-    font-size: 25px;
-    padding: 50px;
-}
 #s_buttonarea {
-    padding-left: 100px;
-    bottom: 20px;
-    right: 70px;
     position: absolute;
+    bottom: 0px;
+    height: 100px;
+    width: 100vw;
 }
 .s_button {
     background: rgba(255,255,255,0.7);
