@@ -24,7 +24,7 @@
         <div id="startmenu_area" class="notselectable"><!--control-->
             <center>
                 <div class="s_buttonarea">
-                    <button onclick="startmaze()" class="s_button">start</button>
+                    <button onclick="startnew();startmaze()" class="s_button">start</button>
                 </div>
             </center>
         </div>
@@ -32,7 +32,7 @@
             <center>
                 <div class="s_buttonarea">
                     <button onclick="startmaze()" class="s_button">restart</button>
-                    <button onclick="makemaze(mazesize[0],mazesize[1]);mazeto3d();startmaze()" class="s_button">new game</button>
+                    <button onclick="startnew();startmaze()" class="s_button">new game</button>
                 </div>
             </center>
         </div>
@@ -104,11 +104,19 @@
 <script src="makemaze.js"></script>
 <script>
 
-    var mazesize = [10,10]
+var mazesize
+var mazestart
+var mazegoal
+
+function startnew() {
+    mazesize = [10,10]
     makemaze(mazesize[0],mazesize[1]);
-    var mazestart = [1,1];
-    var mazegoal = [maze[0].length-2,maze.length-2];
+    flmove = maze
+    mazestart = [1,1];
+    mazegoal = [maze[0].length-2,maze.length-2];
     mazeto3d();
+}
+
 
 function startmaze() {
     changescene("maze");
@@ -138,8 +146,8 @@ function startgoal() {
     drsel.value = "HD";
     despl();
     changescene("goal");
-    cam_property[0] = [-1,-8,1.2];
-    cam_property[1] = [260,2,10];
+    cam_property[0] = [-2,-8,1.2];
+    cam_property[1] = [250,2,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
@@ -152,7 +160,6 @@ window.onload = function() {
 }
 
 var flmove = [[]]
-flmove = maze
 let cam_property = [
     [0,0,0], //camera position [x,y,z] (block)
     [0,0,0], //camera angle [h,v,scale] (degree)
