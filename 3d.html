@@ -219,12 +219,15 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
     }
 
 function makeobj() {
+    hs = 0.1
+    human = [[[cam_property[0][0]-hs,cam_property[0][1]-hs,0.1],[cam_property[0][0]+hs,cam_property[0][1]+hs,0.1],[cam_property[0][0]-hs,cam_property[0][1]+hs,0.1],[0],[250],[25],[0],[0],],[[cam_property[0][0]-hs,cam_property[0][1]-hs,0.1],[cam_property[0][0]+hs,cam_property[0][1]-hs,0.1],[cam_property[0][0]+hs,cam_property[0][1]+hs,0.1],[0],[20],[250],[0],[0],]]
     scene[scenename][1] = addLen(scene[scenename][1]);
     if (cframe%5==0) {
         scene[scenename][1] = sortP(scene[scenename][1]);
     }
     obj = [];
     obj = obj.concat(scene[scenename][1])
+    obj = obj.concat(human)
 
     obj = addLen(obj);
     if (cframe%5==0) {
