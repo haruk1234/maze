@@ -214,9 +214,24 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         function changescene(name) {
             cframe = 0;
             scenename = name;
-            obj = scene[scenename][1];
+            fobj = scene[scenename][1];
         }
     }
+
+function makeobj() {
+    scene[scenename][1] = addLen(scene[scenename][1]);
+    if (cframe%5==0) {
+        scene[scenename][1] = sortP(scene[scenename][1]);
+    }
+    obj = [];
+    obj = obj.concat(scene[scenename][1])
+
+    obj = addLen(obj);
+    if (cframe%5==0) {
+        obj = sortP(obj);
+    }
+    return obj;
+}
 
 
     let cframe = 0;
@@ -236,10 +251,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             iarr[index+2] = 10; // Blue
             iarr[index+3] = 255; // Alpha
         }
-        obj = addLen(obj);
-        if (cframe%5==0) {
-            obj = sortP(obj);
-        }
+        obj = makeobj()
         polygons = obj;
         vl = VNormalized([40,10,50]);
         for (i=0;i<polygons.length;i++) {
