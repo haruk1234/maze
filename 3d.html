@@ -107,6 +107,7 @@
 var mazesize
 var mazestart
 var mazegoal = [0,0]
+var illumination = [0,0,1]
 
 function startnew() {
     mazesize = [10,10]
@@ -124,6 +125,7 @@ function startmaze() {
     despl();
     cam_property[0] = [1.2,1.2,0.7];
     cam_property[1] = [45,0,10];
+    illumination = [40,10,50];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "visible";
@@ -134,8 +136,9 @@ function startmenu() {
     drsel.value = "HD";
     despl();
     changescene("title");
-    cam_property[0] = [0,-4,1.6];
-    cam_property[1] = [230,2,10];
+    illumination = [40,10,20];
+    cam_property[0] = [2,-4,1.6];
+    cam_property[1] = [245,2,10];
     document.getElementById("startmenu_area").style.visibility = "visible";
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "hidden";
@@ -146,6 +149,7 @@ function startgoal() {
     drsel.value = "HD";
     despl();
     changescene("goal");
+    illumination = [40,10,20];
     cam_property[0] = [-2,-8,1.6];
     cam_property[1] = [250,2,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
@@ -281,7 +285,7 @@ function eachchange(arr,mx,my,mz,rz) {
         }
         obj = makeobj()
         polygons = obj;
-        vl = VNormalized([40,10,50]);
+        vl = VNormalized(illumination);
         for (i=0;i<polygons.length;i++) {
             t = polygons[i];
             p1 = pos_3t2d(t[0]);
