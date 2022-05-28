@@ -275,14 +275,6 @@ function eachchange(arr,mx,my,mz,rz) {
         let co = document.getElementById("imgOut");
         co.height=y;co.width=x;
         ctx = co.getContext('2d');
-        let iarr = new Uint8ClampedArray(x*y*4);
-        for (let i = 0; i < x*y; i++) {
-            let index = (i)*4; // index of position [ix,iy]
-            iarr[index+0] = 10; // Red
-            iarr[index+1] = 10; // Green
-            iarr[index+2] = 10; // Blue
-            iarr[index+3] = 255; // Alpha
-        }
         obj = makeobj()
         polygons = obj;
         vl = VNormalized(illumination);
@@ -291,42 +283,28 @@ function eachchange(arr,mx,my,mz,rz) {
             p1 = pos_3t2d(t[0]);
             p2 = pos_3t2d(t[1]);
             p3 = pos_3t2d(t[2]);
-
             if (p1[2]&&p2[2]&&p3[2]) {
                 continue;
             }
-
             v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
             v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             normal = VNormalized(VCProduct(v12,v13)); //法線
             angl = VIProduct(vl,normal); // 0<=normal<=1
             light = (Math.max(angl,angl*0.2)*0.9+0.4)*(200/(polygons[i][7]+200));
-            
-            xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
-            xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
-            ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][1]);
-            ymin = Math.max(Math.min(p1[1],p2[1],p3[1]),0);
 
-            dp = [p1,p2,p3];
-            if (t[3][0]==0) {
-                for (iy = ymin; iy < ymax; iy++) {
-                    for (ix = xmin; ix < xmax; ix++) {
-                        if (inclusion([ix,iy],dp)) {
-                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                            iarr[index+0] = t[4][0]*light;
-                            iarr[index+1] = t[5][0]*light;
-                            iarr[index+2] = t[6][0]*light;
-                        }
-                    }
-                }
-            }
+            ctx.fillStyle = `rgb(${t[4][0]*light},${t[5][0]*light},${t[6][0]*light})`;
+            ctx.beginPath();
+            ctx.moveTo(p1[0],p1[1]);
+            ctx.lineTo(p2[0],p2[1]);
+            ctx.lineTo(p3[0],p3[1]);
+            ctx.fill();
         }
-        ctx.putImageData(new ImageData(iarr,x,y),0,0);
         fps = (Date.now() - startTime) / 1000;
         startTime = Date.now();
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
         setTimeout(mkimg,10);
     }
+
 
     function sortP(ps) {
         psl = ps.length;
