@@ -8,27 +8,30 @@
         <meta name="description" content="3Dの迷路で遊べます">
         <meta name="application-name" content="3D Maze"/>
         <meta name="twitter:site" content="@haruk_1234">
+        <meta name="twitter:creator" content="@haruk_1234">
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:image:src" content="https://haruk1234.github.io/maze/title.png">
-        <meta cam_property="og:type" content="website">
-        <meta cam_property="og:title" content="3D Maze - haruk1234">
-        <meta cam_property="og:description" content="3Dの迷路で遊べます">
-        <meta cam_property="og:site_name" content="HarukSite">
-        <meta cam_property="og:image" content="https://haruk1234.github.io/maze/title.png">
+        <meta name="twitter:title" content="3D Maze">
+        <meta name="twitter:description" content="3Dの迷路で遊べます">
+        <meta name="twitter:image" content="https://haruk1234.github.io/maze/title.png">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="3D Maze - haruk1234">
+        <meta property="og:description" content="3Dの迷路で遊べます">
+        <meta property="og:site_name" content="HarukSite">
+        <meta property="og:image" content="https://haruk1234.github.io/maze/title.png">
 
     </head>
     <body>
         <div id="img_area">
             <img id="imgOutput" style="display: block;image-rendering: pixelated;">
         </div>
-        <div id="startmenu_area" class="notselectable"><!--control-->
+        <div id="startmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div class="s_buttonarea">
                     <button onclick="startnew();startmaze()" class="s_button">start</button>
                 </div>
             </center>
         </div>
-        <div id="goalmenu_area" class="notselectable"><!--control-->
+        <div id="goalmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div class="s_buttonarea">
                     <button onclick="startmaze()" class="s_button">restart</button>
@@ -36,7 +39,7 @@
                 </div>
             </center>
         </div>
-        <div id="control_area" class="notselectable"><!--control-->
+        <div id="control_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
                     <details id="control_details" open="true">
@@ -79,7 +82,7 @@
                 </div>
             </center>
         </div>
-        <div id="information_area" class="notselectable"><!--control-->
+        <div id="information_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
                     <ul style="width: 100%;padding: 0;margin: 0;">
@@ -139,10 +142,12 @@ function startmenu() {
     illumination = [40,10,20];
     cam_property[0] = [1,-4,1.3];
     cam_property[1] = [242,2,10];
-    document.getElementById("startmenu_area").style.visibility = "visible";
+    scene[scenename][1] = addLen(scene[scenename][1]);
+    scene[scenename][1] = sortP(scene[scenename][1]);
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
+    document.getElementById("startmenu_area").style.visibility = "visible";
 }
 
 function startgoal() {
@@ -150,7 +155,7 @@ function startgoal() {
     despl();
     changescene("goal");
     illumination = [40,10,20];
-    cam_property[0] = [-2,-8,1.6];
+    cam_property[0] = [-2,-8,0.8];
     cam_property[1] = [250,2,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
@@ -239,7 +244,6 @@ function makeobj() {
 
     // obj = obj.concat(human)
 
-    obj = addLen(obj);
     obj = addLen(obj);
     if (cframe%5==0) {
         obj = sortP(obj);
@@ -462,8 +466,10 @@ function eachchange(arr,mx,my,mz,rz) {
         if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
             cam_property[0][0] = bfx
         }
-        if (Math.floor(cam_property[0][0])==mazegoal[0]&&Math.floor(cam_property[0][1])==mazegoal[1]) {
-            startgoal()
+        if (scenename=="maze") {
+            if (Math.floor(cam_property[0][0])==mazegoal[0]&&Math.floor(cam_property[0][1])==mazegoal[1]) {
+                startgoal()
+            }
         }
         document.getElementById("show_pos").innerHTML = Math.floor(cam_property[0][0]*100)/100+","+Math.floor(cam_property[0][1]*100)/100
         document.getElementById("len_togoal").innerHTML = Math.floor(length2d([cam_property[0],mazegoal])*100)/100
@@ -536,7 +542,7 @@ setInterval(keyinput,65)
     function resizeImg() {
         dw = cam_property[3][0];
         dh = cam_property[3][1];
-        let bottom_area = 17;
+        let bottom_area = 30;
         let ww = window.innerWidth;
         let rw = 0;let rh = 0;let vm = 1;let hm = 1;
         let wh = window.innerHeight-bottom_area-vm;
@@ -580,9 +586,9 @@ resizeImg(); // first resize
 }
 #footer {
     position: absolute;
-    font-size: 10px;
+    font-size: 20px;
     width: 100%;
-    height: 17px;
+    height: 27px;
     bottom: 0px;
     left: 0px;
     background: rgba(171,243,231,0.6);
@@ -617,7 +623,6 @@ p {
     top: 10px;
     left: 0px;
     position: absolute;
-    font-size: 95%;
 }
 
 #control {
@@ -628,10 +633,9 @@ p {
 }
 #information_area {
     width: 100%;
-    bottom: 25px;
+    bottom: 35px;
     left: 0px;
     position: absolute;
-    font-size: 95%;
 }
 .s_buttonarea {
     position: absolute;
@@ -641,7 +645,7 @@ p {
 }
 .s_button {
     background: rgba(255,255,255,0.7);
-    font-size: 20px;
+    font-size: 30px;
     width: 200px;
     height: 50px;
 }
