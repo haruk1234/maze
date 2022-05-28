@@ -93,11 +93,6 @@
                 </div>
             </center>
         </div>
-        <div id="footer" class="notselectable">
-            <center>
-                <pre>2022 haruk1234</pre>
-            </center>
-        </div>
     </body>
 </html>
 <script>
@@ -155,7 +150,7 @@ function startgoal() {
     despl();
     changescene("goal");
     illumination = [40,10,20];
-    cam_property[0] = [-2,-8,0.8];
+    cam_property[0] = [-2,-8,1.2];
     cam_property[1] = [250,2,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
@@ -542,7 +537,7 @@ setInterval(keyinput,65)
     function resizeImg() {
         dw = cam_property[3][0];
         dh = cam_property[3][1];
-        let bottom_area = 30;
+        let bottom_area = 0;
         let ww = window.innerWidth;
         let rw = 0;let rh = 0;let vm = 1;let hm = 1;
         let wh = window.innerHeight-bottom_area-vm;
@@ -583,18 +578,6 @@ resizeImg(); // first resize
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
-}
-#footer {
-    position: absolute;
-    font-size: 20px;
-    width: 100%;
-    height: 27px;
-    bottom: 0px;
-    left: 0px;
-    background: rgba(171,243,231,0.6);
-}
-pre {
-    display: inline;
 }
 
 body::-webkit-scrollbar {
