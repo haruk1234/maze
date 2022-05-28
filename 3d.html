@@ -519,13 +519,35 @@ let keyw = {}
     keyw[82] = ()=>cam_property[1][1]+=2;
     keyw[70] = ()=>cam_property[1][1]-=2;
 }
+let keyw_s = {}
+{
+    keyw_s[87] = ()=>move(0.8);
+    keyw_s[83] = ()=>move(-0.8);
+    keyw_s[65] = ()=>cam_property[1][0]-=8;
+    keyw_s[68] = ()=>cam_property[1][0]+=8;
+    keyw_s[82] = ()=>cam_property[1][1]+=4;
+    keyw_s[70] = ()=>cam_property[1][1]-=4;
+}
 let keystatus_d = {};
 function keyinput() {
     keys = Object.keys(keystatus_d);
     for (i=0;i<keys.length;i++) {
         if (keystatus_d[keys[i]]) {
-            if (keys[i] in keyw) {
-                keyw[keys[i]]();
+            if (keystatus_d[16]) {
+                console.log("shift")
+                if (keys[i] in keyw_s) {
+                    keyw_s[keys[i]]();
+                }
+                else {
+                    if (keys[i] in keyw) {
+                        keyw[keys[i]]();
+                    }
+                }
+            }
+            else {
+                if (keys[i] in keyw) {
+                    keyw[keys[i]]();
+                }
             }
         }
     }
