@@ -22,7 +22,8 @@
     </head>
     <body>
         <div id="img_area">
-            <img id="imgOutput" style="display: block;image-rendering: pixelated;">
+            <!-- <img id="imgOutput" style="display: block;image-rendering: pixelated;"> -->
+            <canvas id="imgOut" width="480" height="320" style="image-rendering: pixelated;"></canvas>
         </div>
         <div id="startmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
@@ -327,6 +328,66 @@ function eachchange(arr,mx,my,mz,rz) {
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
         setTimeout(mkimg,10);
     }
+    function mkimg() {
+        cframe++;
+        x = cam_property[3][0];
+        y = cam_property[3][1];
+        let co = document.getElementById("imgOut");
+        co.height=y;co.width=x;
+        ctx = co.getContext('2d');
+        let iarr = new Uint8ClampedArray(x*y*4);
+        for (let i = 0; i < x*y; i++) {
+            let index = (i)*4; // index of position [ix,iy]
+            iarr[index+0] = 10; // Red
+            iarr[index+1] = 10; // Green
+            iarr[index+2] = 10; // Blue
+            iarr[index+3] = 255; // Alpha
+        }
+        obj = makeobj()
+        polygons = obj;
+        vl = VNormalized(illumination);
+        for (i=0;i<polygons.length;i++) {
+            t = polygons[i];
+            p1 = pos_3t2d(t[0]);
+            p2 = pos_3t2d(t[1]);
+            p3 = pos_3t2d(t[2]);
+
+            if (p1[2]&&p2[2]&&p3[2]) {
+                continue;
+            }
+
+            v12 = [t[1][0]-t[0][0],t[1][1]-t[0][1],t[1][2]-t[0][2]];
+            v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
+            normal = VNormalized(VCProduct(v12,v13)); //法線
+            angl = VIProduct(vl,normal); // 0<=normal<=1
+            light = (Math.max(angl,angl*0.2)*0.9+0.4)*(200/(polygons[i][7]+200));
+            
+            xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),cam_property[3][0]);
+            xmin = Math.max(Math.min(p1[0],p2[0],p3[0]),0);
+            ymax = Math.min(Math.max(p1[1],p2[1],p3[1]),cam_property[3][1]);
+            ymin = Math.max(Math.min(p1[1],p2[1],p3[1]),0);
+
+            dp = [p1,p2,p3];
+            if (t[3][0]==0) {
+                for (iy = ymin; iy < ymax; iy++) {
+                    for (ix = xmin; ix < xmax; ix++) {
+                        if (inclusion([ix,iy],dp)) {
+                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                            iarr[index+0] = t[4][0]*light;
+                            iarr[index+1] = t[5][0]*light;
+                            iarr[index+2] = t[6][0]*light;
+                        }
+                    }
+                }
+            }
+        }
+        ctx.putImageData(new ImageData(iarr,x,y),0,0);
+        //document.getElementById("imgOutput").src = co.toDataURL('image/png');
+        fps = (Date.now() - startTime) / 1000;
+        startTime = Date.now();
+        document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
+        setTimeout(mkimg,10);
+    }
 
     function sortP(ps) {
         psl = ps.length;
@@ -538,25 +599,26 @@ setInterval(keyinput,65)
         dw = cam_property[3][0];
         dh = cam_property[3][1];
         let bottom_area = 0;
+        let rw = 0;let rh = 0;
         let ww = window.innerWidth;
-        let rw = 0;let rh = 0;let vm = 1;let hm = 1;
-        let wh = window.innerHeight-bottom_area-vm;
-        if (ww*dh>wh*dw) {
-            rw = wh*dw/dh;
-            rh = wh;
-            hm += (ww-rw)/2;
+        let wh = window.innerHeight-bottom_area;
+        let csc = 1
+        hcsc = ww/dw
+        wcsc = wh/dh
+        console.log(hcsc,wcsc)
+        if (hcsc>wcsc) {
+            csc = wcsc
+            rw = (ww - dw*csc)/2
         }
         else {
-            rw = ww;
-            rh = ww*dh/dw;
-            vm += (wh-rh)/2;
+            csc = hcsc
+            rh = (wh - dh*csc)/2
         }
-        document.getElementById("imgOutput").style.marginTop = (vm).toString()+"px";
-        document.getElementById("imgOutput").style.marginBottom = (vm).toString()+"px";
-        document.getElementById("imgOutput").style.marginLeft = (hm).toString()+"px";
-        document.getElementById("imgOutput").style.marginRight = (hm).toString()+"px";
-        document.getElementById("imgOutput").style.width = (rw).toString()+"px";
-        document.getElementById("imgOutput").style.height = (rh).toString()+"px";
+        document.getElementById("imgOut").style.marginTop = (rh).toString()+"px";
+        document.getElementById("imgOut").style.marginBottom = (rh).toString()+"px";
+        document.getElementById("imgOut").style.marginLeft = (rw).toString()+"px";
+        document.getElementById("imgOut").style.marginRight = (rw).toString()+"px";
+        document.getElementById("imgOut").style.transform = "scale("+csc.toString()+","+csc.toString()+")";
     };
 window.onresize = resizeImg;
 resizeImg(); // first resize
@@ -637,6 +699,9 @@ p {
 }
 .s_button:active {
     background: rgba(168, 168, 168,0.7);
+}
+#imgOut {
+    transform-origin: top left;
 }
 </style>
 
