@@ -22,8 +22,7 @@
     </head>
     <body>
         <div id="img_area">
-            <!-- <img id="imgOutput" style="display: block;image-rendering: pixelated;"> -->
-            <canvas id="imgOut" width="480" height="320" style="image-rendering: pixelated;"></canvas>
+            <canvas id="imgOut" style="image-rendering: pixelated;"></canvas>
         </div>
         <div id="startmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
@@ -268,13 +267,13 @@ function eachchange(arr,mx,my,mz,rz) {
 
     let cframe = 0;
 
+    var co = document.getElementById("imgOut");
+    var ctx = co.getContext('2d');
     function mkimg() {
         cframe++;
         x = cam_property[3][0];
         y = cam_property[3][1];
-        let co = document.getElementById("imgOut");
         co.height=y;co.width=x;
-        ctx = co.getContext('2d');
         let iarr = new Uint8ClampedArray(x*y*4);
         for (let i = 0; i < x*y; i++) {
             let index = (i)*4; // index of position [ix,iy]
