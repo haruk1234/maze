@@ -120,7 +120,7 @@ function startnew() {
 
 function startmaze() {
     changescene("maze");
-    drsel.value = "QVGA";
+    drsel.value = "VGA";
     despl();
     cam_property[0] = [1.2,1.2,0.7];
     cam_property[1] = [45,0,10];
@@ -147,7 +147,7 @@ function startmenu() {
 }
 
 function startgoal() {
-    drsel.value = "HD";
+    drsel.value = "FHD";
     despl();
     changescene("goal");
     illumination = [40,10,20];
@@ -205,7 +205,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
-        drsel.value = "QVGA";
+        drsel.value = "VGA";
         cam_property[3] = display_list[drsel.value];
         resizeImg();
         function despl() {
