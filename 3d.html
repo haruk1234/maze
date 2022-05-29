@@ -165,8 +165,8 @@ function startgoal() {
     despl();
     changescene("goal");
     illumination = [40,10,20];
-    cam_property[0] = [-2,-8,1.2];
-    cam_property[1] = [250,2,10];
+    cam_property[0] = [-2.8,-8.7,1.2];
+    cam_property[1] = [265,2,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
@@ -290,6 +290,7 @@ function eachchange(arr,mx,my,mz,rz) {
         y = cam_property[3][1];
         co.height=y;co.width=x;
         let iarr = new Uint8ClampedArray(x*y*4);
+        let zbuf = new Uint8Array(x*y).fill(0);
         for (let i = 0; i < x*y; i++) {
             let index = (i)*4; // index of position [ix,iy]
             iarr[index+0] = 10; // Red
@@ -325,11 +326,15 @@ function eachchange(arr,mx,my,mz,rz) {
             if (t[3][0]==0) {
                 for (iy = ymin; iy < ymax; iy++) {
                     for (ix = xmin; ix < xmax; ix++) {
-                        if (inclusion([ix,iy],dp)) {
-                            index = ((iy)*x+(ix))*4; // index of position [ix,iy]
-                            iarr[index+0] = t[4][0]*light;
-                            iarr[index+1] = t[5][0]*light;
-                            iarr[index+2] = t[6][0]*light;
+                        let idex = iy*x+ix
+                        if (zbuf[idex]==0) {
+                            if (inclusion([ix,iy],dp)) {
+                                zbuf[idex] = 1
+                                index = ((iy)*x+(ix))*4; // index of position [ix,iy]
+                                iarr[index+0] = t[4][0]*light;
+                                iarr[index+1] = t[5][0]*light;
+                                iarr[index+2] = t[6][0]*light;
+                            }
                         }
                     }
                 }
@@ -349,7 +354,7 @@ function eachchange(arr,mx,my,mz,rz) {
         while (i<psl) {
             j=0;jm = psl-i-1;
             while (j<jm) {
-                if (ps[j][7]<ps[j+1][7]) {
+                if (ps[j][7]>ps[j+1][7]) {
                     bu = ps[j+1];
                     ps[j+1] = ps[j];
                     ps[j] = bu;
