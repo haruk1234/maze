@@ -33,6 +33,21 @@
         </div>
         <div id="goalmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
+                <div class="result_area">
+                    <div id="result_area">
+                        <div class="result">
+                            <p>結果</p>
+                            <table>
+                                <tr>
+                                    <td>時間</td>
+                                    <td><span id="time"></span>秒</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </center>
+            <center>
                 <div class="s_buttonarea">
                     <button onclick="startmaze()" class="s_button">restart</button>
                     <button onclick="startnew();startmaze()" class="s_button">new game</button>
@@ -103,6 +118,7 @@ var mazesize
 var mazestart
 var mazegoal = [0,0]
 var illumination = [0,0,1]
+var mazestarttime = Date.now()
 
 function startnew() {
     mazesize = [10,10]
@@ -125,6 +141,7 @@ function startmaze() {
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "visible";
     document.getElementById("information_area").style.visibility = "visible";
+    startTime = Date.now()
 }
 
 function startmenu() {
@@ -153,6 +170,7 @@ function startgoal() {
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
+    document.getElementById("time").innerHTML = ((Date.now()-mazestarttime)/1000).toString();
 }
 
 window.onload = function() {
@@ -168,8 +186,6 @@ let cam_property = [
     [640,480], //display
 ]
 
-
-var startTime = Date.now();
 
 let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
         "112 63": [112,63,16,9],
@@ -264,6 +280,7 @@ function eachchange(arr,mx,my,mz,rz) {
 
     let cframe = 0;
 
+    var startTime = Date.now()
     var co = document.getElementById("imgOut");
     var ctx = co.getContext('2d');
     function mkimg() {
@@ -663,6 +680,26 @@ p {
 #imgOut {
     transform-origin: top left;
 }
+
+.result_area{
+    position: absolute;
+    top: 10px;
+    height: 100px;
+    width: 100vw;
+}
+#result_area{
+    height: 100%;
+    width: 50%;
+}
+
+.result {
+    border-radius: 10px;
+    background: rgba(255,255,255,0.8);
+    padding: 10px;
+    height: calc(100% - 20px);
+    width: 50%;
+}
+
 </style>
 
 
