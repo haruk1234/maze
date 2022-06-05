@@ -58,7 +58,7 @@
         <div id="control_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
-                    <details id="control_details" open="true">
+                    <details id="control_details">
                         <summary>control</summary>
                         <table style="width: 100%;">
                             <tr>
@@ -122,6 +122,7 @@ var illumination = [0,0,1]
 var mazestarttime = Date.now()
 
 function startnew() {
+    startTime = Date.now()
     mazesize = [10,10]
     makemaze(mazesize[0],mazesize[1]);
     flmove = maze
