@@ -1,4 +1,4 @@
-<!-- made by haruk1234, 2022 -->
+<!-- made by haruk130, 2022 -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -8,17 +8,17 @@
         <meta name="description" content="3Dの迷路で遊べます">
         <meta name="keywords" content="Haruk,haruk,haruk1234,3D,maze,3dmaze,neknaj,game">
         <meta name="application-name" content="3D Maze"/>
-        <meta name="twitter:site" content="@haruk_1234">
-        <meta name="twitter:creator" content="@haruk_1234">
+        <meta name="twitter:site" content="@haruk130">
+        <meta name="twitter:creator" content="@haruk130">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="3D Maze">
         <meta name="twitter:description" content="3Dの迷路で遊べます">
-        <meta name="twitter:image:src" content="https://haruk1234.github.io/maze/title.png">
+        <meta name="twitter:image:src" content="https://haruk130.github.io/maze/title.png">
         <meta property="og:type" content="website">
         <meta property="og:title" content="3D Maze - haruk1234">
         <meta property="og:description" content="3Dの迷路で遊べます">
         <meta property="og:site_name" content="HarukSite">
-        <meta property="og:image" content="https://haruk1234.github.io/maze/title.png">
+        <meta property="og:image" content="https://haruk130.github.io/maze/title.png">
 
     </head>
     <body>
@@ -52,6 +52,7 @@
                 <div class="s_buttonarea">
                     <button onclick="startmaze()" class="s_button">restart</button>
                     <button onclick="startnew();startmaze()" class="s_button">new game</button>
+                    <button onclick="startmenu()" class="s_button">title</button>
                 </div>
             </center>
         </div>
@@ -521,16 +522,29 @@ function eachchange(arr,mx,my,mz,rz) {
         return result;
     }
 
+    function ifthescene(func,scene_name) {
+        if (scenename = scene_name) {
+            func();
+        }
+    }
 
 
 // keyboard
 document.onkeydown = function(e) {
     keystatus_d[event.keyCode] = true;
+    keys = Object.keys(keystatus_d);
+    for (i=0;i<keys.length;i++) {
+        if (keys[i] in keyw_f) {
+            keyw_f[keys[i]]();
+        }
+    }
 };
 document.onkeyup = function(e) {
     keystatus_d[event.keyCode] = false;
 };
-let keyw = {}
+
+
+let keyw = {} // 通常
 {
     keyw[87] = ()=>move(0.2);
     keyw[83] = ()=>move(-0.2);
@@ -538,8 +552,13 @@ let keyw = {}
     keyw[68] = ()=>cam_property[1][0]+=5;
     keyw[82] = ()=>cam_property[1][1]+=2;
     keyw[70] = ()=>cam_property[1][1]-=2;
+    keyw[27] = function() {
+        if (scenename=="maze") {
+            startmenu();
+        }
+    }
 }
-let keyw_s = {}
+let keyw_s = {} // shift押し中
 {
     keyw_s[87] = ()=>move(0.8);
     keyw_s[83] = ()=>move(-0.8);
@@ -548,11 +567,25 @@ let keyw_s = {}
     keyw_s[82] = ()=>cam_property[1][1]+=4;
     keyw_s[70] = ()=>cam_property[1][1]-=4;
 }
+let keyw_f = {} // イベント取得時
+{
+    keyw_f[32] = function() {
+        if (scenename=="title") {
+            startnew();startmaze();
+        }
+        else if (scenename=="goal") {
+            startnew();startmaze();
+        }
+    }
+}
+
+
 let keystatus_d = {};
 function keyinput() {
     keys = Object.keys(keystatus_d);
     for (i=0;i<keys.length;i++) {
         if (keystatus_d[keys[i]]) {
+            console.log(keys[i])
             if (keystatus_d[16]) {
                 console.log("shift")
                 if (keys[i] in keyw_s) {
@@ -572,7 +605,7 @@ function keyinput() {
         }
     }
 }
-setInterval(keyinput,65)
+setInterval(keyinput,60)
 
 // resize window
     function resizeImg() {
@@ -722,7 +755,7 @@ var firebaseConfig = {
     measurementId: "G-F2XPLPFDJ5"
 };
 firebase.initializeApp(firebaseConfig);
-if (location.hostname == "haruk1234.github.io") {
+if (location.hostname == "haruk130.github.io") {
     firebase.analytics();
 }
 </script>
