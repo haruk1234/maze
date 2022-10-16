@@ -432,38 +432,44 @@ function eachchange(arr,mx,my,mz,rz) {
 
     function rotate3d_x(pos,r_x) { // x軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
-        r_x = r_x *(Math.PI/180);
         _x3 = _x1;
-        _y3 = _y1*cos(r_x)-_z1*sin(r_x);
-        _z3 = _y1*sin(r_x)+_z1*cos(r_x);
+        let cosrx = cos(r_x);
+        let sinrx = sin(r_x);
+        _y3 = _y1*cosrx-_z1*sinrx;
+        _z3 = _y1*sinrx+_z1*cosrx;
         return [_x3,_y3,_z3];
     }
     function rotate3d_z(pos,r_z) { // z軸のみの回転
         _x1 = pos[0];_y1 = pos[1];_z1 = pos[2];
-        r_z = r_z *(Math.PI/180);
         _z3 = _z1;
-        _x3 = _x1*cos(r_z)-_y1*sin(r_z);
-        _y3 = _x1*sin(r_z)+_y1*cos(r_z);
+        let cosrz = cos(r_z);
+        let sinrz = sin(r_z);
+        _x3 = _x1*cosrz-_y1*sinrz;
+        _y3 = _x1*sinrz+_y1*cosrz;
         return [_x3,_y3,_z3];
     }
     function rotate3d(pos,r_x,r_y,r_z) { // 回転
         _x1 = pos[0];_y = pos[1];_z = pos[2];
-        r_x = r_x *(Math.PI/180);
-        r_y = r_y *(Math.PI/180);
-        r_z = r_z *(Math.PI/180);
-        _y2 = _y*cos(r_x)-_z*sin(r_x);
-        _z1 = _y*sin(r_x)+_z*cos(r_x);
-        _x2 = _x1*cos(r_y)+_z1*sin(r_y);
-        _z3 = -_x1*sin(r_y)+_z1*cos(r_y);
-        _x3 = _x2*cos(r_z)-_y2*sin(r_z);
-        _y3 = _x2*sin(r_z)+_y2*cos(r_z);
+        let cosrx = cos(r_x);
+        let sinrx = sin(r_x);
+        let cosry = cos(r_y);
+        let sinry = sin(r_y);
+        let cosrz = cos(r_z);
+        let sinrz = sin(r_z);
+        _y2 = _y*cosrx-_z*sinrx;
+        _z1 = _y*sinrx+_z*cosrx;
+        _x2 = _x1*cosry+_z1*sinry;
+        _z3 = -_x1*sinry+_z1*cosry;
+        _x3 = _x2*cosrz-_y2*sinrz;
+        _y3 = _x2*sinrz+_y2*cosrz;
         return [_x3,_y3,_z3];
     }
     function rotate2d(pos,r) {
         var _x = pos[0];_y = pos[1];
-        r = r *(Math.PI/180);
-        var x = _x*cos(r)-_y*sin(r);
-        var y = _x*sin(r)+_y*cos(r);
+        let cosr = cos(r);
+        let sinr = sin(r);
+        var x = _x*cosr-_y*sinr;
+        var y = _x*sinr+_y*cosr;
         return [x,y];
     }
 
@@ -492,27 +498,10 @@ function eachchange(arr,mx,my,mz,rz) {
     }
 
     function sin(z) {
-        return Math.sin(z);
+        return Math.sin(z*(Math.PI/180));
     }
     function cos(z) {
-        return Math.cos(z);
-    }
-    function sin(z) {
-        z = z%(Math.PI*2);
-        let r = 0;
-        let f = 0;
-        for (n=0;n<10;n++) {
-            r += ( (-1)**n/factonal(2*n+1) ) * ( z**(2*n+1) );
-        }
-        return r;
-    }
-    function cos(z) {
-        z = z%(Math.PI*2);
-        let r = 0;
-        for (n=0;n<10;n++) {
-            r += ( (-1)**n/factonal(2*n) ) * ( z**(2*n) );
-        }
-        return r;
+        return Math.cos(z*(Math.PI/180));
     }
     function factonal(n) {
         let result = 1;
