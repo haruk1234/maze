@@ -69,7 +69,7 @@
         }
         return true;
     }
-
+   
     function mazeto3d() {
         x = maze[0].length;
         y = maze.length;
@@ -83,42 +83,38 @@
             for (let lx=0;lx<x;lx++) {
                 if (maze[ly][lx]==0) {
                     // // 上面
-                    // fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],])
-                    // fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],])
+                    fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],])
+                    fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],])
                     // 横面
                     if (!(lx>0&&maze[ly][lx-1]==0)) {
-                        fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                        fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                    }
-                    
+                        fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                    }                    
                     if (!(ly<y-1&&maze[ly+1][lx]==0)) {
-                        fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                        fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                    }
-                    
+                        fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                    }                    
                     if (!(lx<x-1&&maze[ly][lx+1]==0)) {
-                        fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                        fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                    }
-                    
+                        fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                    }                    
                     if (!(ly>0&&maze[ly-1][lx]==0)) {
-                        fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[0],[c[0]],[c[1]],[c[2]],[0],]);
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[0],[c[0]],[c[1]],[c[2]],[0],]);
+                        fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[c[0],c[1],c[2]]]);
                     }
-
                 }
                 else {
                     if (lx==1&&ly==1) {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[0],[sfc[0]],[sfc[1]],[sfc[2]],[0],])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[0],[sfc[0]],[sfc[1]],[sfc[2]],[0],])
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
                     }
                     else if (lx==x-2&&ly==y-2) {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[0],[efc[0]],[efc[1]],[efc[2]],[0],])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[0],[efc[0]],[efc[1]],[efc[2]],[0],])
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
                     }
                     else {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[0],[fc[0]],[fc[1]],[fc[2]],[0],])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[0],[fc[0]],[fc[1]],[fc[2]],[0],])
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
                     }
                 }
             }
