@@ -30,7 +30,7 @@ class tdDRAW {
             iarr[i*4+3] = 255;
         }
         let polygons = this.obj;
-        let vl = this.VNormalized([40,50,130]); // 平行光源
+        let vl = this.VNormalized([30,10,20]); // 平行光源
         this.trifv = [Math.sin(this.camangle[0]),Math.cos(this.camangle[0]),Math.sin(-this.camangle[1]),Math.cos(this.camangle[1])];
         for (let i=0;i<polygons.length;i++) {
             let t = polygons[i];

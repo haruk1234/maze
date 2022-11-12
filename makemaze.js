@@ -73,8 +73,8 @@
     function mazeto3d() {
         x = maze[0].length;
         y = maze.length;
-        scene["maze"] = [[0],[]];
-        fmaze = scene["maze"][1];
+        scene["maze"] = [];
+        fmaze = scene["maze"];
         c = [212,210,254];
         fc = [242,240,254];
         sfc = [212,210,25];
@@ -83,8 +83,8 @@
             for (let lx=0;lx<x;lx++) {
                 if (maze[ly][lx]==0) {
                     // // 上面
-                    fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],])
-                    fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[0],[c[0]],[c[1]],[c[2]],[0],])
+                    //fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
+                    //fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
                     // 横面
                     if (!(lx>0&&maze[ly][lx-1]==0)) {
                         fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);

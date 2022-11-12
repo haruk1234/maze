@@ -120,7 +120,7 @@
 let cframe = 0;
 
     
-let tddraw = new tdDRAW();
+var tddraw = new tdDRAW();
 tddraw.setCamera([[1.2,1.2,0.7],[90,0],[1920,1080]]);
 var co = document.getElementById("imgOut");
 var ctx = co.getContext('2d');
@@ -133,7 +133,6 @@ var mazesize
 var mazestart
 var mazegoal = [0,0]
 var illumination = [0,0,1]
-var cam_property = [0,0,0]
 var mazestarttime = Date.now()
 var flmove = [[]]
 
@@ -150,10 +149,9 @@ function startnew() {
 
 function startmaze() {
     changescene("maze");
-    drsel.value = "VGA";
     despl();
-    cam_property[0] = [1.2,1.2,0.7];
-    cam_property[1] = [45,0,10];
+    tddraw.campos = [1.2,1.2,0.7];
+    tddraw.camangle = [45,0,10];
     illumination = [40,10,50];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "hidden";
@@ -163,12 +161,12 @@ function startmaze() {
 }
 
 function startmenu() {
-    drsel.value = "FHD";
+    flmove = [[]]
     despl();
     changescene("title");
-    illumination = [40,10,20];
-    cam_property[0] = [1,-4,1.3];
-    cam_property[1] = [242,2,10];
+    console.log("startmenu")
+    tddraw.campos = [2.2,2.2,1];
+    tddraw.camangle = [42.5,0,10];
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
@@ -176,12 +174,11 @@ function startmenu() {
 }
 
 function startgoal() {
-    drsel.value = "FHD";
+    flmove = [[]]
     despl();
     changescene("goal");
-    illumination = [40,10,20];
-    cam_property[0] = [-2.8,-8.7,1.2];
-    cam_property[1] = [265,2,10];
+    tddraw.campos = [1,1,0.5];
+    tddraw.camangle = [42.5,0,10];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
@@ -190,21 +187,18 @@ function startgoal() {
 }
 
 window.onload = function() {
-    startmenu();
-    setTimeout(mkimg,10);
+    mkimg();
+    startmenu()
 }
 
 function mkimg() {
-    tddraw.display = cam_property[3]
-    tddraw.campos = cam_property[0]
-    tddraw.camangle = cam_property[1]
     co.height=tddraw.display[1];co.width=tddraw.display[0];
 
     ctx.putImageData(tddraw.getImg(),0,0);
         fps = (Date.now() - startTime) / 1000;
         startTime = Date.now();
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
-    setTimeout(mkimg,10);
+    setTimeout(mkimg,0);
 }
 
 
@@ -232,17 +226,17 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         for (i=0;i<dlkeys.length;i++) {
             oel = document.createElement("option");
             if (i==0) {
-                cam_property[3] = display_list[dlkeys[i]];
+                tddraw.display = display_list[dlkeys[i]];
             }
             oel.value = dlkeys[i];
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
-        drsel.value = "VGA";
-        cam_property[3] = display_list[drsel.value];
+        drsel.value = "HVGA";
+        tddraw.display = display_list[drsel.value];
         resizeImg();
         function despl() {
-            cam_property[3] = display_list[drsel.value];
+            tddraw.display = display_list[drsel.value];
             resizeImg();
         };
     }
@@ -251,31 +245,32 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         function changescene(name) {
             cframe = 0;
             scenename = name;
-            tddraw.setObj(scene[scenename][1])
+            tddraw.setObj(scene[scenename])
+            console.log("scene changed",scene[scenename])
         }
     }
 
     function move(l) {
-        los = rotate2d([0,l],-cam_property[1][0]);
-        bfx = cam_property[0][0];
-        bfy = cam_property[0][1];
-        cam_property[0][0] += los[0];
-        cam_property[0][1] += los[1];
-        let cx = cam_property[0][0];
-        let cy = cam_property[0][1];
-        if (cy<flmove.length&&bfx<flmove[0].length&&flmove[Math.floor(cy)][Math.floor(bfx)]==0) {
-            cam_property[0][1] = bfy
-        }
-        if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
-            cam_property[0][0] = bfx
-        }
         if (scenename=="maze") {
-            if (Math.floor(cam_property[0][0])==mazegoal[0]&&Math.floor(cam_property[0][1])==mazegoal[1]) {
+            los = rotate2d([0,l],-tddraw.camangle[0]);
+            bfx = tddraw.campos[0];
+            bfy = tddraw.campos[1];
+            tddraw.campos[0] += los[0];
+            tddraw.campos[1] += los[1];
+            let cx = tddraw.campos[0];
+            let cy = tddraw.campos[1];
+            if (cy<flmove.length&&bfx<flmove[0].length&&flmove[Math.floor(cy)][Math.floor(bfx)]==0) {
+                tddraw.campos[1] = bfy
+            }
+            if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
+                tddraw.campos[0] = bfx
+            }
+            if (Math.floor(tddraw.campos[0])==mazegoal[0]&&Math.floor(tddraw.campos[1])==mazegoal[1]) {
                 startgoal()
             }
         }
-        document.getElementById("show_pos").innerHTML = Math.floor(cam_property[0][0]*100)/100+","+Math.floor(cam_property[0][1]*100)/100
-        document.getElementById("len_togoal").innerHTML = Math.floor(length2d([cam_property[0],mazegoal])*100)/100
+        document.getElementById("show_pos").innerHTML = Math.floor(tddraw.campos[0]*100)/100+","+Math.floor(tddraw.campos[1]*100)/100
+        document.getElementById("len_togoal").innerHTML = Math.floor(length2d([tddraw.campos,mazegoal])*100)/100
         
     }
 
@@ -323,12 +318,12 @@ document.onkeyup = function(e) {
 
 let keyw = {} // 通常
 {
-    keyw[87] = ()=>move(0.2);
-    keyw[83] = ()=>move(-0.2);
-    keyw[65] = ()=>cam_property[1][0]-=0.1;
-    keyw[68] = ()=>cam_property[1][0]+=0.1;
-    keyw[82] = ()=>cam_property[1][1]+=0.1;
-    keyw[70] = ()=>cam_property[1][1]-=0.1;
+    keyw[87] = ()=>move(0.3);
+    keyw[83] = ()=>move(-0.3);
+    keyw[65] = ()=>tddraw.camangle[0]-=0.1;
+    keyw[68] = ()=>tddraw.camangle[0]+=0.1;
+    keyw[82] = ()=>tddraw.camangle[1]+=0.2;
+    keyw[70] = ()=>tddraw.camangle[1]-=0.2;
     keyw[27] = function() {
         if (scenename=="maze") {
             startmenu();
@@ -339,10 +334,10 @@ let keyw_s = {} // shift押し中
 {
     keyw_s[87] = ()=>move(0.8);
     keyw_s[83] = ()=>move(-0.8);
-    keyw_s[65] = ()=>cam_property[1][0]-=0.2;
-    keyw_s[68] = ()=>cam_property[1][0]+=0.2;
-    keyw_s[82] = ()=>cam_property[1][1]+=0.2;
-    keyw_s[70] = ()=>cam_property[1][1]-=0.2;
+    keyw_s[65] = ()=>tddraw.camangle[0]-=0.2;
+    keyw_s[68] = ()=>tddraw.camangle[0]+=0.2;
+    keyw_s[82] = ()=>tddraw.camangle[1]+=0.4;
+    keyw_s[70] = ()=>tddraw.camangle[1]-=0.4;
 }
 let keyw_f = {} // イベント取得時
 {
@@ -382,12 +377,12 @@ function keyinput() {
         }
     }
 }
-setInterval(keyinput,60)
+setInterval(keyinput,50)
 
 // resize window
     function resizeImg() {
-        dw = cam_property[3][0];
-        dh = cam_property[3][1];
+        dw = tddraw.display[0];
+        dh = tddraw.display[0];
         let bottom_area = 0;
         let rw = 0;let rh = 0;
         let ww = window.innerWidth;
