@@ -46,7 +46,7 @@ class tdDRAW {
             let v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             let normal = this.VNormalized(this.VCProduct(v12,v13)); //法線ベクトル
             let angl = this.VIProduct(vl,normal); // 0<=normal<=1
-            let light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(polygons[i][4]+1000)); // 面と平行光源の角度
+            let light = (Math.max(angl,angl*0.1)*0.9+0.3)*(10/(polygons[i][4]+10)); // 面と平行光源の角度
             
             // 三角形を描画する範囲
             let xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),this.display[0]);
@@ -96,7 +96,7 @@ class tdDRAW {
     pos_3t2d(pos) {
         let p1 = this.rotate3d_x(this.rotate3d_z([pos[0]-this.campos[0],pos[1]-this.campos[1],pos[2]-this.campos[2]]));
         let l = Math.abs(14/(p1[1]));
-        let s = this.display[0]/40;
+        let s = this.display[0]/30;
         let d = [p1[0]*l*s+this.display[0]/2,-p1[2]*l*s+this.display[1]/2];
         return [Math.floor(d[0]),Math.floor(d[1]),p1];
     }

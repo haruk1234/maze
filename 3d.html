@@ -129,6 +129,7 @@ var mazegoal = [0,0]
 var illumination = [0,0,1]
 var mazestarttime = Date.now()
 var flmove = [[]]
+var mazedisplay = "HVGA"
 
 function startnew() {
     mazesize = [10,10]
@@ -145,6 +146,8 @@ function startmaze() {
     changescene("maze");
     mkimgspan = 0;
     despl();
+    tddraw.display = mazedisplay;
+    resizeImg();
     tddraw.campos = [1.2,1.2,0.7];
     tddraw.camangle = [45,0,10];
     illumination = [40,10,50];
@@ -159,25 +162,13 @@ function startmaze() {
     document.addEventListener('pointerlockchange', lockChangeAlert);
     document.addEventListener('mozpointerlockchange', lockChangeAlert);
 }
-
-function starttitle() {
-    despl();
-    changescene("title");
-    mkimgspan = 100;
-    console.log("starttitle")
-    tddraw.campos = [2.2,2.2,1];
-    tddraw.camangle = [42.5,0,10];
-    document.getElementById("goalmenu_area").style.visibility = "hidden";
-    document.getElementById("control_area").style.visibility = "hidden";
-    document.getElementById("information_area").style.visibility = "hidden";
-    document.getElementById("startmenu_area").style.visibility = "hidden";
-}
-
 function startmenu() {
     despl();
     changescene("title");
-    console.log("startmenu")
-    tddraw.campos = [2.2,2.2,1];
+    console.log("startmenu");
+    tddraw.display = display_list["FHD"];
+    resizeImg();
+    tddraw.campos = [3.0,2.2,0.7];
     mkimgspan = 100;
     tddraw.camangle = [42.5,0,10];
     document.exitPointerLock();
@@ -187,9 +178,27 @@ function startmenu() {
     document.getElementById("startmenu_area").style.visibility = "visible";
 }
 
+function starttitle() {
+    despl();
+    changescene("title");
+    tddraw.display = display_list["FHD"];
+    resizeImg();
+    mkimgspan = 100;
+    console.log("starttitle")
+    tddraw.campos = [3.0,2.2,0.7];
+    tddraw.camangle = [42.5,0,10];
+    document.getElementById("goalmenu_area").style.visibility = "hidden";
+    document.getElementById("control_area").style.visibility = "hidden";
+    document.getElementById("information_area").style.visibility = "hidden";
+    document.getElementById("startmenu_area").style.visibility = "hidden";
+}
+
+
 function startgoal() {
     despl();
     changescene("goal");
+    tddraw.display = display_list["FHD"];
+    resizeImg();
     tddraw.campos = [1,1,0.5];
     tddraw.camangle = [42.5,0,10];
     mkimgspan = 100;
@@ -294,11 +303,13 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
-        drsel.value = "HVGA";
+        drsel.value = mazedisplay;
         tddraw.display = display_list[drsel.value];
+        mazedisplay = display_list[drsel.value];
         resizeImg();
         function despl() {
             tddraw.display = display_list[drsel.value];
+            mazedisplay = display_list[drsel.value];
             resizeImg();
         };
     }
@@ -449,7 +460,7 @@ setInterval(tick,60)
 // resize window
     function resizeImg() {
         dw = tddraw.display[0];
-        dh = tddraw.display[0];
+        dh = tddraw.display[1];
         let bottom_area = 0;
         let rw = 0;let rh = 0;
         let ww = window.innerWidth;
