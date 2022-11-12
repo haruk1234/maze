@@ -158,6 +158,11 @@ function startmaze() {
     document.getElementById("control_area").style.visibility = "visible";
     document.getElementById("information_area").style.visibility = "visible";
     mazestarttime = Date.now()
+
+    co.requestPointerLock();
+    document.onmousemove = updatePosition
+    document.addEventListener('pointerlockchange', lockChangeAlert);
+    document.addEventListener('mozpointerlockchange', lockChangeAlert);
 }
 
 function startmenu() {
@@ -167,6 +172,7 @@ function startmenu() {
     console.log("startmenu")
     tddraw.campos = [2.2,2.2,1];
     tddraw.camangle = [42.5,0,10];
+    document.exitPointerLock();
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
@@ -179,6 +185,7 @@ function startgoal() {
     changescene("goal");
     tddraw.campos = [1,1,0.5];
     tddraw.camangle = [42.5,0,10];
+    document.exitPointerLock();
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
@@ -191,6 +198,41 @@ window.onload = function() {
     startmenu()
 }
 
+
+var mspos = false
+function lockChangeAlert(e) {
+    if (document.pointerLockElement === co || document.mozPointerLockElement === co) {
+        mspos = true
+    } else {
+        mspos = false
+        updatePosition(e)
+    }
+}
+let ptX=0;ptY=0;
+var bfm = null
+function updatePosition(e) { // マウスでの視点の変更
+    // console.log(mspos)
+    if (mspos) {
+        bfm = e
+        // console.log(e.movementX,e.movementY)
+        updateangle(e.movementX*0.1,e.movementY*0.1)
+    }
+    else if (bfm!=null) {
+        // console.log(-bfm.movementX,-bfm.movementY)
+        updateangle(-bfm.movementX*0.1,-bfm.movementY*0.1)
+        bfm = null
+    }
+}
+function updateangle(x,y) {
+  ptX += x;
+  ptX = (ptX+360)%360
+
+  if (Math.abs(ptY-y)<90) {
+    ptY -= y;
+  }
+  // console.log("view angle:"+[ptX,ptY])
+}
+
 function mkimg() {
     co.height=tddraw.display[1];co.width=tddraw.display[0];
 
@@ -199,6 +241,11 @@ function mkimg() {
         startTime = Date.now();
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
     setTimeout(mkimg,0);
+}
+function viewangle() {
+    tddraw.camangle[0] += (ptX)*(Math.PI/180);
+    tddraw.camangle[1] += (ptY)*(Math.PI/180);
+    ptX=0;ptY=0;
 }
 
 
@@ -357,7 +404,6 @@ function keyinput() {
     keys = Object.keys(keystatus_d);
     for (i=0;i<keys.length;i++) {
         if (keystatus_d[keys[i]]) {
-            console.log(keys[i])
             if (keystatus_d[16]) {
                 console.log("shift")
                 if (keys[i] in keyw_s) {
@@ -377,7 +423,13 @@ function keyinput() {
         }
     }
 }
-setInterval(keyinput,50)
+function tick() {
+    if (scenename=="maze") {
+        viewangle()
+        keyinput()
+    }
+}
+setInterval(tick,50)
 
 // resize window
     function resizeImg() {
