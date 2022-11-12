@@ -184,8 +184,13 @@ function startgoal() {
 }
 
 window.onload = function() {
-    mkimg();
-    startmenu()
+    if (!co.requestPointerLock) {
+        alert("sorry, your browser is not surpported");
+    }
+    else {
+        mkimg();
+        startmenu();
+    }
 }
 
 
