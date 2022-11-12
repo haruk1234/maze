@@ -119,6 +119,8 @@ var ctx = co.getContext('2d');
 co.height=tddraw.display[1];co.width=tddraw.display[0];
 
 
+var mkimgspan = 10;
+
 var startTime = Date.now()
 
 var mazesize
@@ -141,6 +143,7 @@ function startnew() {
 
 function startmaze() {
     changescene("maze");
+    mkimgspan = 0;
     despl();
     tddraw.campos = [1.2,1.2,0.7];
     tddraw.camangle = [45,0,10];
@@ -157,11 +160,25 @@ function startmaze() {
     document.addEventListener('mozpointerlockchange', lockChangeAlert);
 }
 
+function starttitle() {
+    despl();
+    changescene("title");
+    mkimgspan = 100;
+    console.log("starttitle")
+    tddraw.campos = [2.2,2.2,1];
+    tddraw.camangle = [42.5,0,10];
+    document.getElementById("goalmenu_area").style.visibility = "hidden";
+    document.getElementById("control_area").style.visibility = "hidden";
+    document.getElementById("information_area").style.visibility = "hidden";
+    document.getElementById("startmenu_area").style.visibility = "hidden";
+}
+
 function startmenu() {
     despl();
     changescene("title");
     console.log("startmenu")
     tddraw.campos = [2.2,2.2,1];
+    mkimgspan = 100;
     tddraw.camangle = [42.5,0,10];
     document.exitPointerLock();
     document.getElementById("goalmenu_area").style.visibility = "hidden";
@@ -175,6 +192,7 @@ function startgoal() {
     changescene("goal");
     tddraw.campos = [1,1,0.5];
     tddraw.camangle = [42.5,0,10];
+    mkimgspan = 100;
     document.exitPointerLock();
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
@@ -184,11 +202,13 @@ function startgoal() {
 }
 
 window.onload = function() {
+    mkimg();
     if (!co.requestPointerLock) {
         alert("sorry, your browser is not surpported");
+        mkimgspan = 10000;
+        starttitle();
     }
     else {
-        mkimg();
         startmenu();
     }
 }
@@ -235,7 +255,7 @@ function mkimg() {
         fps = (Date.now() - startTime) / 1000;
         startTime = Date.now();
         document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
-    setTimeout(mkimg,0);
+    setTimeout(mkimg,mkimgspan);
 }
 function viewangle() {
     tddraw.camangle[0] += (ptX)*(Math.PI/180);
