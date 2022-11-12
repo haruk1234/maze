@@ -163,18 +163,8 @@ function startmaze() {
     document.addEventListener('mozpointerlockchange', lockChangeAlert);
 }
 function startmenu() {
-    despl();
-    changescene("title");
-    console.log("startmenu");
-    tddraw.display = display_list["FHD"];
-    resizeImg();
-    tddraw.campos = [3.0,2.2,0.7];
+    starttitle();
     mkimgspan = 100;
-    tddraw.camangle = [42.5,0,10];
-    document.exitPointerLock();
-    document.getElementById("goalmenu_area").style.visibility = "hidden";
-    document.getElementById("control_area").style.visibility = "hidden";
-    document.getElementById("information_area").style.visibility = "hidden";
     document.getElementById("startmenu_area").style.visibility = "visible";
 }
 
@@ -183,10 +173,10 @@ function starttitle() {
     changescene("title");
     tddraw.display = display_list["FHD"];
     resizeImg();
-    mkimgspan = 100;
+    mkimgspan = 10000;
     console.log("starttitle")
-    tddraw.campos = [3.0,2.2,0.7];
-    tddraw.camangle = [42.5,0,10];
+    tddraw.campos = [3.0,2.0,1.1];
+    tddraw.camangle = [42.5,-0.1,10];
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
@@ -199,7 +189,7 @@ function startgoal() {
     changescene("goal");
     tddraw.display = display_list["FHD"];
     resizeImg();
-    tddraw.campos = [1,1,0.5];
+    tddraw.campos = [1.5,0.9,0.2];
     tddraw.camangle = [42.5,0,10];
     mkimgspan = 100;
     document.exitPointerLock();
