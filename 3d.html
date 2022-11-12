@@ -82,15 +82,6 @@
                                 <td><center>上下</center></td>
                                 <td><button onclick="cam_property[1][1]-=3" style="width: 100%;">↓</button></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td><center>解像度</center></td>
-                                <td>
-                                    <select id="resolution" onchange="despl()">
-                                    </select>
-                                </td>
-                                <td></td>
-                            </tr>
                         </table>
                     </details>
                 </div>
@@ -100,6 +91,7 @@
             <center>
                 <div id="control">
                     <ul style="width: 100%;padding: 0;margin: 0;">
+                        <li style="display: inline-block;"><center><p>解像度: <select id="resolution" onchange="despl()"></select></p></center></li>
                         <li style="display: inline-block;"><center><p>FPS: <span id="show_fps"></span></p></center></li>
                         <li style="display: inline-block;"><center><p>座標: <span id="show_pos"></span></p></center></li>
                         <li style="display: inline-block;"><center><p>ゴールまでの距離<span id="len_togoal"></span></p></center></li>
@@ -166,7 +158,6 @@ function startmaze() {
 }
 
 function startmenu() {
-    flmove = [[]]
     despl();
     changescene("title");
     console.log("startmenu")
@@ -180,7 +171,6 @@ function startmenu() {
 }
 
 function startgoal() {
-    flmove = [[]]
     despl();
     changescene("goal");
     tddraw.campos = [1,1,0.5];
@@ -215,11 +205,11 @@ function updatePosition(e) { // マウスでの視点の変更
     if (mspos) {
         bfm = e
         // console.log(e.movementX,e.movementY)
-        updateangle(e.movementX*0.1,e.movementY*0.1)
+        updateangle(e.movementX*0.15,e.movementY*0.1)
     }
     else if (bfm!=null) {
         // console.log(-bfm.movementX,-bfm.movementY)
-        updateangle(-bfm.movementX*0.1,-bfm.movementY*0.1)
+        updateangle(-bfm.movementX*0.15,-bfm.movementY*0.1)
         bfm = null
     }
 }
@@ -429,7 +419,7 @@ function tick() {
         keyinput()
     }
 }
-setInterval(tick,50)
+setInterval(tick,60)
 
 // resize window
     function resizeImg() {
