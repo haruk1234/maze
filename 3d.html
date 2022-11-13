@@ -227,10 +227,10 @@ var bfm = null
 function updatePosition(e) {
     if (mspos) {
         bfm = e;
-        updateangle(e.movementX*0.15,e.movementY*0.1);
+        updateangle(e.movementX*0.1,e.movementY*0.1);
     }
     else if (bfm!=null) {
-        updateangle(-bfm.movementX*0.15,-bfm.movementY*0.1);
+        updateangle(-bfm.movementX*0.1,-bfm.movementY*0.1);
         bfm = null;
     }
 }
