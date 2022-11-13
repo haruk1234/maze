@@ -28,7 +28,7 @@
         <div id="startmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div class="s_buttonarea">
-                    <button onclick="startnew();startmaze()" class="s_button">start</button>
+                    <button onclick="startnew();startmaze();" class="s_button">start</button>
                 </div>
             </center>
         </div>
@@ -50,9 +50,9 @@
             </center>
             <center>
                 <div class="s_buttonarea">
-                    <button onclick="startmaze()" class="s_button">restart</button>
-                    <button onclick="startnew();startmaze()" class="s_button">new game</button>
-                    <button onclick="startmenu()" class="s_button">title</button>
+                    <button onclick="startmaze();" class="s_button">restart</button>
+                    <button onclick="startnew();startmaze();" class="s_button">new game</button>
+                    <button onclick="startmenu();" class="s_button">title</button>
                 </div>
             </center>
         </div>
@@ -224,27 +224,23 @@ function lockChangeAlert(e) {
 }
 let ptX=0;ptY=0;
 var bfm = null
-function updatePosition(e) { // マウスでの視点の変更
-    // console.log(mspos)
+function updatePosition(e) {
     if (mspos) {
-        bfm = e
-        // console.log(e.movementX,e.movementY)
-        updateangle(e.movementX*0.15,e.movementY*0.1)
+        bfm = e;
+        updateangle(e.movementX*0.15,e.movementY*0.1);
     }
     else if (bfm!=null) {
-        // console.log(-bfm.movementX,-bfm.movementY)
-        updateangle(-bfm.movementX*0.15,-bfm.movementY*0.1)
-        bfm = null
+        updateangle(-bfm.movementX*0.15,-bfm.movementY*0.1);
+        bfm = null;
     }
 }
 function updateangle(x,y) {
   ptX += x;
-  ptX = (ptX+360)%360
+  ptX = (ptX+360)%360;
 
   if (Math.abs(ptY-y)<90) {
     ptY -= y;
   }
-  // console.log("view angle:"+[ptX,ptY])
 }
 
 function mkimg() {
@@ -308,8 +304,8 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         function changescene(name) {
             cframe = 0;
             scenename = name;
-            tddraw.setObj(scene[scenename])
-            console.log("scene changed",scene[scenename])
+            tddraw.setObj(scene[scenename]);
+            console.log("scene changed",scene[scenename]);
         }
     }
 
@@ -323,17 +319,17 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             let cx = tddraw.campos[0];
             let cy = tddraw.campos[1];
             if (cy<flmove.length&&bfx<flmove[0].length&&flmove[Math.floor(cy)][Math.floor(bfx)]==0) {
-                tddraw.campos[1] = bfy
+                tddraw.campos[1] = bfy;
             }
             if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
-                tddraw.campos[0] = bfx
+                tddraw.campos[0] = bfx;
             }
             if (Math.floor(tddraw.campos[0])==mazegoal[0]&&Math.floor(tddraw.campos[1])==mazegoal[1]) {
-                startgoal()
+                startgoal();
             }
         }
-        document.getElementById("show_pos").innerHTML = Math.floor(tddraw.campos[0]*100)/100+","+Math.floor(tddraw.campos[1]*100)/100
-        document.getElementById("len_togoal").innerHTML = Math.floor(length2d([tddraw.campos,mazegoal])*100)/100
+        document.getElementById("show_pos").innerHTML = Math.floor(tddraw.campos[0]*100)/100+","+Math.floor(tddraw.campos[1]*100)/100;
+        document.getElementById("len_togoal").innerHTML = Math.floor(length2d([tddraw.campos,mazegoal])*100)/100;
         
     }
 
@@ -360,7 +356,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
         return Math.cos(z*(Math.PI/180));
     }
     function length2d(pos) {
-        return Math.sqrt( (pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2 )
+        return Math.sqrt( (pos[0][0]-pos[1][0])**2+(pos[0][1]-pos[1][1])**2 );
     }
 
 
@@ -441,8 +437,8 @@ function keyinput() {
 }
 function tick() {
     if (scenename=="maze") {
-        viewangle()
-        keyinput()
+        viewangle();
+        keyinput();
     }
 }
 setInterval(tick,60)
@@ -455,17 +451,17 @@ setInterval(tick,60)
         let rw = 0;let rh = 0;
         let ww = window.innerWidth;
         let wh = window.innerHeight-bottom_area;
-        let csc = 1
-        hcsc = ww/dw
-        wcsc = wh/dh
+        let csc = 1;
+        hcsc = ww/dw;
+        wcsc = wh/dh;
         console.log(hcsc,wcsc)
         if (hcsc>wcsc) {
-            csc = wcsc
-            rw = (ww - dw*csc)/2
+            csc = wcsc;
+            rw = (ww - dw*csc)/2;
         }
         else {
-            csc = hcsc
-            rh = (wh - dh*csc)/2
+            csc = hcsc;
+            rh = (wh - dh*csc)/2;
         }
         document.getElementById("imgOut").style.marginTop = (rh).toString()+"px";
         document.getElementById("imgOut").style.marginBottom = (rh).toString()+"px";
