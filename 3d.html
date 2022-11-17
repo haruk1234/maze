@@ -48,6 +48,7 @@
                     </div>
                 </div>
             </center>
+            <canvas id="playback" style="image-rendering: pixelated;"></canvas>
             <center>
                 <div class="s_buttonarea">
                     <button onclick="startmaze();" class="s_button">restart</button>
@@ -107,6 +108,8 @@
 <script src="3d.js"></script>
 <script src="obj.js"></script>
 <script src="makemaze.js"></script>
+<script src="2d.js"></script>
+<script src="paint.js"></script>
 <script>
 
 let cframe = 0;
@@ -121,21 +124,23 @@ co.height=tddraw.display[1];co.width=tddraw.display[0];
 
 var mkimgspan = 10;
 
-var startTime = Date.now()
+var startTime = Date.now();
 
-var mazesize
-var mazestart
-var mazegoal = [0,0]
-var illumination = [0,0,1]
-var mazestarttime = Date.now()
-var flmove = [[]]
-var mazedisplay = "HVGA"
+var mazesize;
+var mazestart;
+var mazegoal = [0,0];
+var illumination = [0,0,1];
+var mazestarttime = Date.now();
+var flmove = [[]];
+var mazedisplay = "HVGA";
+var mazelog = [];
+var stid = 0;
 
 function startnew() {
-    mazesize = [10,10]
+    mazesize = [10,10];
     makemaze(mazesize[0],mazesize[1]);
-    flmove = maze
-    tddraw.setObj(maze)
+    flmove = maze;
+    tddraw.setObj(maze);
     mazestart = [1,1];
     mazegoal = [maze[0].length-2,maze.length-2];
     mazeto3d();
@@ -143,6 +148,8 @@ function startnew() {
 
 
 function startmaze() {
+    mazelog=[];
+    stid++;
     changescene("maze");
     mkimgspan = 0;
     despl();
@@ -155,7 +162,7 @@ function startmaze() {
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "visible";
     document.getElementById("information_area").style.visibility = "visible";
-    mazestarttime = Date.now()
+    mazestarttime = Date.now();
 
     co.requestPointerLock();
     document.onmousemove = updatePosition
@@ -198,6 +205,22 @@ function startgoal() {
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
     document.getElementById("time").innerHTML = ((Date.now()-mazestarttime)/1000).toString();
+    playlog(mazelog,stid,0,0,0);
+}
+
+function playlog(mazelog,sid,frame,paintl,beforelog) {
+    if (frame==0) {
+        paintl = new Paint("playback");
+        paintl.setup(mazesize[0]*40,mazesize[1]*40);
+        paintl.update();
+    }
+    else {
+        if (stid!=sid) {console.log("changed sid");return;}
+        if (frame > mazelog.length-5) {console.log("end playback");return;}
+        paintl.paintLine([Math.floor(beforelog.data.campos[0]*20),Math.floor(beforelog.data.campos[1]*20)],[Math.floor(mazelog[frame].data.campos[0]*20),Math.floor(mazelog[frame].data.campos[1]*20)],[0,0,255]);
+        paintl.update()
+    }
+    setTimeout(playlog,10,mazelog,sid,frame+1,paintl,mazelog[frame]);
 }
 
 window.onload = function() {
@@ -256,6 +279,10 @@ function viewangle() {
     tddraw.camangle[0] += (ptX)*(Math.PI/180);
     tddraw.camangle[1] += (ptY)*(Math.PI/180);
     ptX=0;ptY=0;
+}
+
+function loggame(name,data=null) {
+    mazelog.push({name:name,data:data,time:Date.now()});
 }
 
 
@@ -439,6 +466,7 @@ function tick() {
     if (scenename=="maze") {
         viewangle();
         keyinput();
+        loggame("tick",JSON.parse(JSON.stringify(tddraw)));
     }
 }
 setInterval(tick,60)
@@ -573,6 +601,12 @@ p {
     padding: 10px;
     height: calc(100% - 20px);
     width: 50%;
+}
+
+#playback {
+	opacity: 0.7;
+	max-width: 500px;
+	width: 40%;
 }
 
 </style>
