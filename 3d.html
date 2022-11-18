@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </center>
-            <canvas id="playback" style="image-rendering: pixelated;"></canvas>
+            <canvas id="playback"></canvas>
             <center>
                 <div class="s_buttonarea">
                     <button onclick="startmaze();" class="s_button">restart</button>
@@ -165,7 +165,7 @@ function startmaze() {
     mazestarttime = Date.now();
 
     co.requestPointerLock();
-    document.onmousemove = updatePosition
+    document.onmousemove = updatePosition;
     document.addEventListener('pointerlockchange', lockChangeAlert);
     document.addEventListener('mozpointerlockchange', lockChangeAlert);
 }
@@ -211,14 +211,43 @@ function startgoal() {
 function playlog(mazelog,sid,frame,paintl,beforelog) {
     if (frame==0) {
         paintl = new Paint("playback");
-        paintl.setup(mazesize[0]*40,mazesize[1]*40);
+        paintl.setup(mazesize[0]*40+20,mazesize[1]*40+20);
         paintl.update();
+        for (let ly=0;ly<y;ly++) {
+            for (let lx=0;lx<x;lx++) {
+                let flcolor = [0,0,0]
+                if (maze[ly][lx]==0) {
+                    flcolor = [10,10,10];
+                }
+                else {
+                    if (lx==1&&ly==1) {
+                        flcolor = [230,230,20];
+                    }
+                    else if (lx==x-2&&ly==y-2) {
+                        flcolor = [100,70,200];
+                    }
+                    else {
+                        flcolor = [200,200,200];
+                    }
+                    for (let lyi=0;lyi<20;lyi++) {
+                        for (let lxi=0;lxi<20;lxi++) {
+                            paintl.paintDot(lx*20+lxi,ly*20+lyi,flcolor);
+                        }
+                    }
+                }
+                for (let lyi=0;lyi<20;lyi++) {
+                    for (let lxi=0;lxi<20;lxi++) {
+                        paintl.paintDot(lx*20+lxi,ly*20+lyi,flcolor);
+                    }
+                }
+            }
+        }
     }
     else {
         if (stid!=sid) {console.log("changed sid");return;}
-        if (frame > mazelog.length-5) {console.log("end playback");return;}
+        if (frame > mazelog.length-2) {console.log("end playback");return;}
         paintl.paintLine([Math.floor(beforelog.data.campos[0]*20),Math.floor(beforelog.data.campos[1]*20)],[Math.floor(mazelog[frame].data.campos[0]*20),Math.floor(mazelog[frame].data.campos[1]*20)],[0,0,255]);
-        paintl.update()
+        paintl.update();
     }
     setTimeout(playlog,10,mazelog,sid,frame+1,paintl,mazelog[frame]);
 }
@@ -236,13 +265,13 @@ window.onload = function() {
 }
 
 
-var mspos = false
+var mspos = false;
 function lockChangeAlert(e) {
     if (document.pointerLockElement === co || document.mozPointerLockElement === co) {
-        mspos = true
+        mspos = true;
     } else {
-        mspos = false
-        updatePosition(e)
+        mspos = false;
+        updatePosition(e);
     }
 }
 let ptX=0;ptY=0;
@@ -352,6 +381,7 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
                 tddraw.campos[0] = bfx;
             }
             if (Math.floor(tddraw.campos[0])==mazegoal[0]&&Math.floor(tddraw.campos[1])==mazegoal[1]) {
+                loggame("goal",JSON.parse(JSON.stringify(tddraw)));
                 startgoal();
             }
         }
