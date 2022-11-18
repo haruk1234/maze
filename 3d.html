@@ -137,7 +137,7 @@ var mazelog = [];
 var stid = 0;
 
 function startnew() {
-    mazesize = [10,10];
+    mazesize = [20,20];
     makemaze(mazesize[0],mazesize[1]);
     flmove = maze;
     tddraw.setObj(maze);
@@ -211,7 +211,7 @@ function startgoal() {
 function playlog(mazelog,sid,frame,paintl,beforelog) {
     if (frame==0) {
         paintl = new Paint("playback");
-        paintl.setup(mazesize[0]*40+20,mazesize[1]*40+20);
+        paintl.setup(mazesize[0]*10+5,mazesize[1]*10+5);
         paintl.update();
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
@@ -229,15 +229,10 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
                     else {
                         flcolor = [200,200,200];
                     }
-                    for (let lyi=0;lyi<20;lyi++) {
-                        for (let lxi=0;lxi<20;lxi++) {
-                            paintl.paintDot(lx*20+lxi,ly*20+lyi,flcolor);
-                        }
-                    }
                 }
-                for (let lyi=0;lyi<20;lyi++) {
-                    for (let lxi=0;lxi<20;lxi++) {
-                        paintl.paintDot(lx*20+lxi,ly*20+lyi,flcolor);
+                for (let lyi=0;lyi<5;lyi++) {
+                    for (let lxi=0;lxi<5;lxi++) {
+                        paintl.paintDot(lx*5+lxi,ly*5+lyi,flcolor);
                     }
                 }
             }
@@ -246,7 +241,7 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
     else {
         if (stid!=sid) {console.log("changed sid");return;}
         if (frame > mazelog.length-2) {console.log("end playback");return;}
-        paintl.paintLine([Math.floor(beforelog.data.campos[0]*20),Math.floor(beforelog.data.campos[1]*20)],[Math.floor(mazelog[frame].data.campos[0]*20),Math.floor(mazelog[frame].data.campos[1]*20)],[0,0,255]);
+        paintl.paintLine([Math.floor(beforelog.data.campos[0]*5),Math.floor(beforelog.data.campos[1]*5)],[Math.floor(mazelog[frame].data.campos[0]*5),Math.floor(mazelog[frame].data.campos[1]*5)],[0,0,255]);
         paintl.update();
     }
     setTimeout(playlog,10,mazelog,sid,frame+1,paintl,mazelog[frame]);
@@ -655,7 +650,7 @@ var firebaseConfig = {
     measurementId: "G-F2XPLPFDJ5"
 };
 firebase.initializeApp(firebaseConfig);
-if (location.hostname == "haruk130.github.io") {
+if (location.hostname == "bem130.github.io") {
     firebase.analytics();
 }
 </script>
