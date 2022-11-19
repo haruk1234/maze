@@ -127,8 +127,6 @@ var mkimgspan = 10;
 var startTime = Date.now();
 
 var mazesize;
-var mazestart;
-var mazegoal = [0,0];
 var illumination = [0,0,1];
 var mazestarttime = Date.now();
 var flmove = [[]];
@@ -139,10 +137,10 @@ var stid = 0;
 function startnew() {
     mazesize = [30,30];
     makemaze(mazesize[0],mazesize[1]);
+    searchdeadend();
+    choosestartgoal();
     flmove = maze;
     tddraw.setObj(maze);
-    mazestart = [1,1];
-    mazegoal = [maze[0].length-2,maze.length-2];
     mazeto3d();
 }
 
@@ -155,7 +153,7 @@ function startmaze() {
     despl();
     tddraw.display = mazedisplay;
     resizeImg();
-    tddraw.campos = [1.2,1.2,0.7];
+    tddraw.campos = [mazestart[0]+0.5,mazestart[1]+0.5,0.7];
     tddraw.camangle = [45,0,10];
     illumination = [40,10,50];
     document.getElementById("startmenu_area").style.visibility = "hidden";
@@ -303,7 +301,7 @@ function viewangle() {
 }
 
 function loggame(name,data=null) {
-    mazelog.push({name:name,data:data,time:Date.now()});
+    mazelog.push({data:data,});
 }
 
 
@@ -488,7 +486,7 @@ function tick() {
     if (scenename=="maze") {
         viewangle();
         keyinput();
-        loggame("tick",JSON.parse(JSON.stringify(tddraw)));
+        loggame("tick",{campos:[tddraw.campos[0],tddraw.campos[1],tddraw.campos[2]]});
     }
 }
 setInterval(tick,60)

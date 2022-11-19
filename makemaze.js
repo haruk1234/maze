@@ -1,13 +1,19 @@
 
     var maze = []
+    var deadend
+    var mazestart
+    var mazegoal
+    var startdir
+    var sdir
+
     function makemaze(x,y) { // size x,y
         maze = Array.from(Array(y*2+1),_=>Array(x*2+1).fill(0));
         maze[Math.floor(Math.random()*y)*2+1][Math.floor(Math.random()*x)*2+1] = 1
         while (searchwall(x,y)) {
-            let lx = Math.floor(Math.random()*x)
-            let ly = Math.floor(Math.random()*y)
-            let ra = searcharound(lx,ly,x,y)
-            makenewroad(lx,ly,ra)
+            let lx = Math.floor(Math.random()*x);
+            let ly = Math.floor(Math.random()*y);
+            let ra = searcharound(lx,ly,x,y);
+            makenewroad(lx,ly,ra);
         }
     }
     function searchwall(x,y) {
@@ -66,6 +72,43 @@
             maze[ay][ax+1]=1;
         }
         return true;
+    }
+
+    function searchdeadend() {
+        let x = maze[0].length/2-1;
+        let y = maze.length/2-1;
+        deadend = [];
+        for (let ly=0;ly<y;ly++) {
+            for (let lx=0;lx<x;lx++) {
+                if (maze[ly*2+1][lx*2+1]==1) {
+                    let awcnt = 0;
+                    if (maze[ly*2+1-1][lx*2+1]==0) {awcnt++;}
+                    if (maze[ly*2+1][lx*2+1-1]==0) {awcnt++;}
+                    if (maze[ly*2+1+1][lx*2+1]==0) {awcnt++;}
+                    if (maze[ly*2+1][lx*2+1+1]==0) {awcnt++;}
+                    if (awcnt==3) {
+                        deadend.push([lx*2+1,ly*2+1]);
+                    }
+                }
+            }
+        }
+    }
+
+    function choosestartgoal() {   
+        let s = Math.floor(Math.random()*deadend.length);
+        mazestart = deadend[s];
+        mazegoal;
+        while (true) {
+            var e = Math.floor(Math.random()*deadend.length);
+            if (e!=s) {
+                mazegoal = deadend[e];
+                break;
+            }
+        }
+        if (maze[mazestart[0]-1][mazestart[1]]==0) {sdir=0;}
+        if (maze[mazestart[0]][mazestart[1]-1]==0) {sdir=1;}
+        if (maze[mazestart[0]+1][mazestart[1]]==0) {sdir=2;}
+        if (maze[mazestart[0]][mazestart[1]+1]==0) {sdir=3;}
     }
    
     function mazeto3d() {
