@@ -4,12 +4,10 @@
         maze = Array.from(Array(y*2+1),_=>Array(x*2+1).fill(0));
         maze[Math.floor(Math.random()*y)*2+1][Math.floor(Math.random()*x)*2+1] = 1
         while (searchwall(x,y)) {
-            for (let ly=0;ly<y;ly++) {
-                for (let lx=0;lx<x;lx++) {
-                    ra = searcharound(lx,ly,x,y);
-                    makenewroad(lx,ly,ra);
-                }
-            }
+            let lx = Math.floor(Math.random()*x)
+            let ly = Math.floor(Math.random()*y)
+            let ra = searcharound(lx,ly,x,y)
+            makenewroad(lx,ly,ra)
         }
     }
     function searchwall(x,y) {
