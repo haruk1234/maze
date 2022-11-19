@@ -291,9 +291,9 @@ function mkimg() {
     co.height=tddraw.display[1];co.width=tddraw.display[0];
 
     ctx.putImageData(tddraw.getImg(),0,0);
-        fps = (Date.now() - startTime) / 1000;
-        startTime = Date.now();
-        document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
+    fps = (Date.now() - startTime) / 1000;
+    startTime = Date.now();
+    document.getElementById("show_fps").innerHTML = ((1/fps).toString()).substring(0,5);
     setTimeout(mkimg,mkimgspan);
 }
 function viewangle() {
@@ -504,7 +504,6 @@ setInterval(tick,60)
         let csc = 1;
         hcsc = ww/dw;
         wcsc = wh/dh;
-        console.log(hcsc,wcsc)
         if (hcsc>wcsc) {
             csc = wcsc;
             rw = (ww - dw*csc)/2;
