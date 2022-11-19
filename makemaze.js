@@ -145,11 +145,11 @@
                     }
                 }
                 else {
-                    if (lx==1&&ly==1) {
+                    if (ly==mazestart[1]&&lx==mazestart[0]) {
                         fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
                         fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
                     }
-                    else if (lx==x-2&&ly==y-2) {
+                    else if (ly==mazegoal[1]&&lx==mazegoal[0]) {
                         fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
                         fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
                     }

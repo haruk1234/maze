@@ -218,10 +218,10 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
                     flcolor = [10,10,10];
                 }
                 else {
-                    if (lx==1&&ly==1) {
+                    if (ly==mazestart[1]&&lx==mazestart[0]) {
                         flcolor = [230,230,20];
                     }
-                    else if (lx==x-2&&ly==y-2) {
+                    else if (ly==mazegoal[1]&&lx==mazegoal[0]) {
                         flcolor = [100,70,200];
                     }
                     else {
@@ -242,7 +242,7 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
         paintl.paintLine([Math.floor(beforelog.data.campos[0]*5),Math.floor(beforelog.data.campos[1]*5)],[Math.floor(mazelog[frame].data.campos[0]*5),Math.floor(mazelog[frame].data.campos[1]*5)],[0,0,255]);
         paintl.update();
     }
-    setTimeout(playlog,10,mazelog,sid,frame+1,paintl,mazelog[frame]);
+    setTimeout(playlog,1,mazelog,sid,frame+1,paintl,mazelog[frame]);
 }
 
 window.onload = function() {
