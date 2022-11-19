@@ -19,7 +19,7 @@ class tdDRAW {
     }
 
     getImg() {
-        //this.sortPolygon();
+        this.sortPolygon();
         this.frame++;
         let x = this.display[0];
         let y = this.display[1];
@@ -46,7 +46,7 @@ class tdDRAW {
             let v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             let normal = this.VNormalized(this.VCProduct(v12,v13)); //法線ベクトル
             let angl = this.VIProduct(vl,normal); // 0<=normal<=1
-            let light = (Math.max(angl,angl*0.1)*0.9+0.3)*(10/(polygons[i][4]+10)); // 面と平行光源の角度
+            let light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(polygons[i][4]+1000)); // 面と平行光源の角度
             
             // 三角形を描画する範囲
             let xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),this.display[0]);
@@ -96,7 +96,7 @@ class tdDRAW {
     pos_3t2d(pos) {
         let p1 = this.rotate3d_x(this.rotate3d_z([pos[0]-this.campos[0],pos[1]-this.campos[1],pos[2]-this.campos[2]]));
         let l = Math.abs(14/(p1[1]));
-        let s = this.display[0]/30;
+        let s = this.display[0]/40;
         let d = [p1[0]*l*s+this.display[0]/2,-p1[2]*l*s+this.display[1]/2];
         return [Math.floor(d[0]),Math.floor(d[1]),p1];
     }
@@ -106,7 +106,7 @@ class tdDRAW {
         let bu;let i=0;
         while (i<psl) {
             let j=0;let jm = psl-i-1;
-            while (j<jm) {
+            while (j<jm||j<100) {
                 if (ps[j][7]>ps[j+1][7]) {
                     bu = ps[j+1];
                     ps[j+1] = ps[j];
@@ -131,14 +131,13 @@ class tdDRAW {
     }
     
     is_p(l1, l2) { // intersection point from 2 lines
-        if (l1[0][0]==l1[1][0]) {l1[0][0]+=0.01;}
-        if (l2[0][0]==l2[1][0]) {l2[0][0]+=0.01;}
-        let a1 = (l1[1][1]-l1[0][1])/(l1[1][0]-l1[0][0]);
-        let b1 = l1[0][1]-a1*l1[0][0];
-        let a2 = (l2[1][1]-l2[0][1])/(l2[1][0]-l2[0][0]);
-        let b2 = l2[0][1]-a2*l2[0][0];
-        let x = (b2-b1)/(a1-a2);
-        let y = a1*x+b1;
+        // 参考 https://mf-atelier.sakura.ne.jp/mf-atelier2/a1/
+        let div = (l1[1][1]-l1[0][1])*(l2[1][0]-l2[0][0])-(l1[1][0]-l1[0][0])*(l2[1][1]-l2[0][1])
+        if (div==0) {return [null,null]}
+        let d1 = l2[0][1]*l2[1][0]-l2[0][0]*l2[1][1]
+        let d2 = l1[0][1]*l1[1][0]-l1[0][0]*l1[1][1]
+        let x = (d1*(l1[1][0]-l1[0][0])-d2*(l2[1][0]-l2[0][0]))/div
+        let y = (d1*(l1[1][1]-l1[0][1])-d2*(l2[1][1]-l2[0][1]))/div
         return [x,y];
     };
     squared_length3d(pos) {
