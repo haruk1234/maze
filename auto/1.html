@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>3Dmaze</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div>
+            <button onclick="start()">generate</button><br>
+            <img id="output" style="max-height: calc(100vh - 50px);max-width: calc(100vw - 20px);width: 1000px;image-rendering: pixelated;">
+        </div>
+    </body>
+</html>
+<script src="../maze.js"></script>
+<script src="solve.js"></script>
+<script>
+
+function start() {
+    let maze = new Maze(30,30);
+    console.log(maze)
+    mkmazeimg(maze.maze,maze.start,maze.goal);
+    let route = new MazeSolve1(maze);
+}
+start()
+
+function mkmazeimg(maze,start,goal) {
+    y = maze.length
+    x = maze[0].length
+    let iarr = new Uint8ClampedArray(x*y*4);
+    for (let iy = 0; iy < y; iy++) {
+        for (let ix = 0; ix < x; ix++) {
+            let index = (iy*x+ix)*4; // index of position [ix,iy]
+            let color = [255,255,255]
+
+            if (maze[iy][ix]==0) {
+                color = [0,0,0]
+            }
+            else {
+                color = [255,255,255]
+                if (iy==start[1]&&ix==start[0]) {color=[212,210,25]}
+                if (iy==goal[1]&&ix==goal[0]) {color=[110,70,220]}
+            }
+
+            iarr[index+0] = color[0]; // Red
+            iarr[index+1] = color[1]; // Green
+            iarr[index+2] = color[2]; // Blue
+            iarr[index+3] = 255; // Alpha
+        }
+    }
+    let co = document.createElement("canvas");
+    co.height=y;co.width=x;co.getContext('2d').putImageData(new ImageData(iarr,x,y),0,0);
+    document.getElementById("output").src = co.toDataURL('image/png');
+}
+
+</script>
