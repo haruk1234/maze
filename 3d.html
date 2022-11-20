@@ -107,7 +107,7 @@
 </script>
 <script src="3d.js"></script>
 <script src="obj.js"></script>
-<script src="makemaze.js"></script>
+<script src="maze.js"></script>
 <script src="2d.js"></script>
 <script src="paint.js"></script>
 <script>
@@ -126,7 +126,7 @@ var mkimgspan = 10;
 
 var startTime = Date.now();
 
-var mazesize;
+var maze
 var illumination = [0,0,1];
 var mazestarttime = Date.now();
 var flmove = [[]];
@@ -135,14 +135,63 @@ var mazelog = [];
 var stid = 0;
 
 function startnew() {
-    mazesize = [30,30];
-    makemaze(mazesize[0],mazesize[1]);
-    searchdeadend();
-    choosestartgoal();
-    flmove = maze;
-    tddraw.setObj(maze);
-    mazeto3d();
+    maze = new Maze(30,30);
+    flmove = maze.maze;
+    mazeto3d(maze);
+    tddraw.setObj(maze.maze);
 }
+
+
+function mazeto3d(maze) {
+        let x = maze.maze[0].length;
+        let y = maze.maze.length;
+        scene["maze"] = [];
+        fmaze = scene["maze"];
+        c = [212,210,254];
+        fc = [242,240,254];
+        sfc = [212,210,25];
+        efc = [112,70,220];
+        for (let ly=0;ly<y;ly++) {
+            for (let lx=0;lx<x;lx++) {
+                if (maze.maze[ly][lx]==0) {
+                    // // 上面
+                    //fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
+                    //fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
+                    // 横面
+                    if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
+                        fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                    }                    
+                    if (!(ly<y-1&&maze.maze[ly+1][lx]==0)) {
+                        fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                    }                    
+                    if (!(lx<x-1&&maze.maze[ly][lx+1]==0)) {
+                        fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                    }                    
+                    if (!(ly>0&&maze.maze[ly-1][lx]==0)) {
+                        fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[c[0],c[1],c[2]]]);
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[c[0],c[1],c[2]]]);
+                    }
+                }
+                else {
+                    if (ly==maze.start[1]&&lx==maze.start[0]) {
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
+                    }
+                    else if (ly==maze.goal[1]&&lx==maze.goal[0]) {
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
+                    }
+                    else {
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
+                    }
+                }
+            }
+        }
+    }
 
 
 function startmaze() {
@@ -153,7 +202,7 @@ function startmaze() {
     despl();
     tddraw.display = mazedisplay;
     resizeImg();
-    tddraw.campos = [mazestart[0]+0.5,mazestart[1]+0.5,0.7];
+    tddraw.campos = [maze.start[0]+0.5,maze.start[1]+0.5,0.7];
     tddraw.camangle = [45,0,10];
     illumination = [40,10,50];
     document.getElementById("startmenu_area").style.visibility = "hidden";
@@ -179,7 +228,6 @@ function starttitle() {
     tddraw.display = display_list["FHD"];
     resizeImg();
     mkimgspan = 10000;
-    console.log("starttitle")
     tddraw.campos = [3.0,2.0,1.1];
     tddraw.camangle = [42.5,-0.1,10];
     document.getElementById("goalmenu_area").style.visibility = "hidden";
@@ -207,21 +255,23 @@ function startgoal() {
 }
 
 function playlog(mazelog,sid,frame,paintl,beforelog) {
+    x = maze.maze[0].length;
+    y = maze.maze.length;
     if (frame==0) {
         paintl = new Paint("playback");
-        paintl.setup(mazesize[0]*10+5,mazesize[1]*10+5);
+        paintl.setup(maze.size[0]*5,maze.size[1]*5);
         paintl.update();
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
                 let flcolor = [0,0,0]
-                if (maze[ly][lx]==0) {
+                if (maze.maze[ly][lx]==0) {
                     flcolor = [10,10,10];
                 }
                 else {
-                    if (ly==mazestart[1]&&lx==mazestart[0]) {
+                    if (ly==maze.start[1]&&lx==maze.start[0]) {
                         flcolor = [230,230,20];
                     }
-                    else if (ly==mazegoal[1]&&lx==mazegoal[0]) {
+                    else if (ly==maze.goal[1]&&lx==maze.goal[0]) {
                         flcolor = [100,70,200];
                     }
                     else {
@@ -242,7 +292,7 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
         paintl.paintLine([Math.floor(beforelog.data.campos[0]*5),Math.floor(beforelog.data.campos[1]*5)],[Math.floor(mazelog[frame].data.campos[0]*5),Math.floor(mazelog[frame].data.campos[1]*5)],[0,0,255]);
         paintl.update();
     }
-    setTimeout(playlog,1,mazelog,sid,frame+1,paintl,mazelog[frame]);
+    setTimeout(playlog,0,mazelog,sid,frame+1,paintl,mazelog[frame]);
 }
 
 window.onload = function() {
@@ -351,7 +401,6 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             cframe = 0;
             scenename = name;
             tddraw.setObj(scene[scenename]);
-            console.log("scene changed",scene[scenename]);
         }
     }
 
@@ -370,13 +419,11 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             if (bfy<flmove.length&&cx<flmove[0].length&&flmove[Math.floor(bfy)][Math.floor(cx)]==0) {
                 tddraw.campos[0] = bfx;
             }
-            if (Math.floor(tddraw.campos[0])==mazegoal[0]&&Math.floor(tddraw.campos[1])==mazegoal[1]) {
+            if (Math.floor(tddraw.campos[0])==maze.goal[0]&&Math.floor(tddraw.campos[1])==maze.goal[1]) {
                 loggame("goal",JSON.parse(JSON.stringify(tddraw)));
                 startgoal();
             }
         }
-        document.getElementById("show_pos").innerHTML = Math.floor(tddraw.campos[0]*100)/100+","+Math.floor(tddraw.campos[1]*100)/100;
-        document.getElementById("len_togoal").innerHTML = Math.floor(length2d([tddraw.campos,mazegoal])*100)/100;
         
     }
 
@@ -464,7 +511,6 @@ function keyinput() {
     for (i=0;i<keys.length;i++) {
         if (keystatus_d[keys[i]]) {
             if (keystatus_d[16]) {
-                console.log("shift")
                 if (keys[i] in keyw_s) {
                     keyw_s[keys[i]]();
                 }
@@ -486,6 +532,10 @@ function tick() {
     if (scenename=="maze") {
         viewangle();
         keyinput();
+        {
+            document.getElementById("show_pos").innerHTML = Math.floor(tddraw.campos[0]*100)/100+","+Math.floor(tddraw.campos[1]*100)/100;
+            document.getElementById("len_togoal").innerHTML = Math.floor(length2d([tddraw.campos,maze.goal])*100)/100;
+        }
         loggame("tick",{campos:[tddraw.campos[0],tddraw.campos[1],tddraw.campos[2]]});
     }
 }

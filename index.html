@@ -11,17 +11,16 @@
         </div>
     </body>
 </html>
-<script src="makemaze.js"></script>
+<script src="maze.js"></script>
 <script>
 
 function start() {
-    makemaze(30,30);
-    searchdeadend();
-    choosestartgoal();
-    mkmazeimg(maze);
+    let maze = new Maze(30,30);
+    console.log(maze)
+    mkmazeimg(maze.maze,maze.start,maze.goal);
 }
 
-function mkmazeimg(maze) {
+function mkmazeimg(maze,start,goal) {
     y = maze.length
     x = maze[0].length
     let iarr = new Uint8ClampedArray(x*y*4);
@@ -35,8 +34,8 @@ function mkmazeimg(maze) {
             }
             else {
                 color = [255,255,255]
-                if (iy==mazestart[1]&&ix==mazestart[0]) {color=[212,210,25]}
-                if (iy==mazegoal[1]&&ix==mazegoal[0]) {color=[110,70,220]}
+                if (iy==start[1]&&ix==start[0]) {color=[212,210,25]}
+                if (iy==goal[1]&&ix==goal[0]) {color=[110,70,220]}
             }
 
             iarr[index+0] = color[0]; // Red
