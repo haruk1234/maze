@@ -4,25 +4,25 @@ class Maze {
     #maze;#deadend;#start;#goal;#sdir;#size;#osize;
     constructor (x,y) {
         this.#osize = [x,y];
-        this.makemaze();
-        this.searchdeadend();
-        this.choosestartgoal();
+        this.#makemaze();
+        this.#searchdeadend();
+        this.#choosestartgoal();
         return {maze:this.#maze,start:this.#start,goal:this.#goal,sdir:this.#sdir,size:this.#size};
     }
-    makemaze() {
+    #makemaze() {
         let x = this.#osize[0];
         let y = this.#osize[1];
         this.#size = [x*2+1,y*2+1];
         this.#maze = Array.from(Array(y*2+1),_=>Array(x*2+1).fill(0));
         this.#maze[Math.floor(Math.random()*y)*2+1][Math.floor(Math.random()*x)*2+1] = 1;
-        while (this.searchwall(x,y)) {
+        while (this.#searchwall(x,y)) {
             let lx = Math.floor(Math.random()*x);
             let ly = Math.floor(Math.random()*y);
-            let ra = this.searcharound(lx,ly,x,y);
-            this.makenewroad(lx,ly,ra);
+            let ra = this.#searcharound(lx,ly,x,y);
+            this.#makenewroad(lx,ly,ra);
         }
     }
-    searchwall(x,y) {
+    #searchwall(x,y) {
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
                 if (this.#maze[ly*2+1][lx*2+1]==0) {return true;}
@@ -30,7 +30,7 @@ class Maze {
         }
         return false;
     }
-    searcharound(cx,cy,x,y) {
+    #searcharound(cx,cy,x,y) {
         let ax = cx*2+1;
         let ay = cy*2+1;
         let ra = [];
@@ -41,7 +41,7 @@ class Maze {
         if (cx<x-1&&this.#maze[ay][ax+2]==0) {ra.push(4);}
         return ra;
     }
-    makenewroad(cx,cy,ard) { // ard - around
+    #makenewroad(cx,cy,ard) { // ard - around
         if (ard.length<1) {return false;}
         let ax = cx*2+1;
         let ay = cy*2+1;
@@ -52,7 +52,7 @@ class Maze {
         if (car==4) {this.#maze[ay][ax+2]=1;this.#maze[ay][ax+1]=1;}
         return true;
     }
-    searchdeadend() {
+    #searchdeadend() {
         let x = this.#maze[0].length/2-1;
         let y = this.#maze.length/2-1;
         this.#deadend = [];
@@ -71,7 +71,7 @@ class Maze {
             }
         }
     }
-    choosestartgoal() {   
+    #choosestartgoal() {   
         let s = Math.floor(Math.random()*this.#deadend.length);
         this.#start = this.#deadend[s];
         while (true) {
