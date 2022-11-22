@@ -23,7 +23,8 @@ function start() {
     maze = new Maze(50,50);
     console.log(maze)
     let route = new MazeSolve1(maze);
-    console.log(route)
+    let eval = new EvalMaze(route).get()
+    console.log(route,eval)
     playlog(route)
 }
 start()

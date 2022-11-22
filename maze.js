@@ -71,7 +71,9 @@ class Maze {
             }
         }
     }
-    choosestartgoal() {   
+    choosestartgoal() {
+    }
+    rndstartgoal() {   
         let s = Math.floor(Math.random()*this.#deadend.length);
         this.#start = this.#deadend[s];
         while (true) {

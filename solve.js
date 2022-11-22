@@ -9,6 +9,9 @@ class MazeSolve1 {
         while (this.searcharound()) {}
         return this.getResult();
     }
+    getFrom() {
+        return this.from;
+    }
     getResult() {
         let p = maze.start[1]*maze.size[0]+maze.start[0];
         let goalp = maze.goal[1]*maze.size[1]+maze.goal[0];
@@ -33,4 +36,8 @@ class MazeSolve1 {
         }
         return flag;
     }
+}
+class EvalMaze {
+    constructor(solvemaze) {this.solvemaze = solvemaze;}
+    get() {return this.solvemaze.length}
 }
