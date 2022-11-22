@@ -6,6 +6,12 @@
 ## 実行する
 https://neknaj.github.io/maze/generator
 
+# solve.js
+迷路を自動で解く
+
+## 実行する
+https://neknaj.github.io/maze/auto/1
+
 ## 使用方法
 classを初期化する  
 ```js
