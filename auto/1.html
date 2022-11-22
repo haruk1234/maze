@@ -6,9 +6,10 @@
     </head>
     <body>
         <div>
+            <h1>迷路を自動生成して自動で解く</h1>
+            <p>下のボタンを押したら別の迷路になります</p>
             <button onclick="start()">generate</button><br>
-            <img id="output" style="max-height: calc(100vh - 50px);max-width: calc(100vw - 20px);width: 1000px;image-rendering: pixelated;">
-            <canvas id="output2" style="max-height: calc(100vh - 50px);max-width: calc(100vw - 20px);width: 1000px;image-rendering: pixelated;">
+            <canvas id="output" style="max-height: calc(100vh - 50px);max-width: calc(100vw - 20px);width: 1000px;image-rendering: pixelated;">
         </div>
     </body>
 </html>
@@ -32,7 +33,7 @@ function playlog(mazelog,paintl=null,beforelog=null,frame=0) {
     x = maze.maze[0].length;
     y = maze.maze.length;
     if (frame==0) {
-        paintl = new Paint("output2");
+        paintl = new Paint("output");
         paintl.setup(maze.size[0]*5,maze.size[1]*5);
         paintl.update();
         for (let ly=0;ly<y;ly++) {
