@@ -40,8 +40,8 @@
                             <p>結果</p>
                             <table>
                                 <tr>
-                                    <td>時間</td>
-                                    <td><span id="time"></span>秒</td>
+                                    <td>タイム</td>
+                                    <td><span id="time"></span></td>
                                 </tr>
                             </table>
                         </div>
@@ -250,8 +250,21 @@ function startgoal() {
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
-    document.getElementById("time").innerHTML = ((Date.now()-mazestarttime)/1000).toString();
+    document.getElementById("time").innerHTML = _times((Date.now()-mazestarttime)/1000);
     playlog(mazelog,stid,0,0,0);
+}
+
+function _times(second) {
+    let ms = (second*1000)%1000
+    let s = Math.floor(second%60)
+    let m = Math.floor(second%3600/60)
+    let h = Math.floor(second/3600)
+    console.log(h,m,s,ms)
+    if (h==0) {
+        console.log("adfaof")
+        return `${m}分${s}秒${ms}`;
+    }
+    return `${h}時間${m}分${s}秒${ms}`;
 }
 
 function playlog(mazelog,sid,frame,paintl,beforelog) {
