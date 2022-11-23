@@ -1,16 +1,10 @@
 # Neknaj Maze
 
 # maze.js
-迷路の自動生成  
 
-## 実行する
+## 迷路の自動生成  
+### 実行する
 https://neknaj.github.io/maze/generator
-
-# solve.js
-迷路を自動で解く
-
-## 実行する
-https://neknaj.github.io/maze/auto/1
 
 ## 使用方法
 classを初期化する  
@@ -24,6 +18,20 @@ maze.size // 迷路の大きさ
 maze.start // スタートの場所
 maze.goal // ゴールの場所
 maze.sdir // スタートの向き
+```
+
+## 迷路を自動で解く
+### 実行する
+https://neknaj.github.io/maze/auto/1
+
+## 使用方法
+classを初期化する  
+```js
+let route = new MazeSolve1(maze)
+```
+出力を取得する
+```js
+route // 迷路の解
 ```
 
 ## 出力例(画像)
