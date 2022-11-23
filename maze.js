@@ -72,22 +72,32 @@ class Maze {
         }
     }
     choosestartgoal() {
-        this.rndstartgoal()
-    }
-    rndstartgoal() {   
-        let s = Math.floor(Math.random()*this.#deadend.length);
-        this.#start = this.#deadend[s];
-        while (true) {
-            var e = Math.floor(Math.random()*this.#deadend.length);
-            if (e!=s) {
-                this.#goal = this.#deadend[e];
-                break;
+        let bestscore = 0
+        for (let i=0;i<1000;i++) {
+            let tstart,tgoal;
+            [tstart,tgoal] = this.rndstartgoal();
+            let teval = new EvalMaze(new MazeSolve1({maze:this.#maze,start:tstart,goal:tgoal,sdir:null,size:this.#size})).get();
+            if (teval>bestscore) {
+                this.#start = tstart;this.#goal = tgoal;bestscore = teval;
             }
         }
         if (this.#maze[this.#start[0]-1][this.#start[1]]==0) {this.#sdir=0;}
         if (this.#maze[this.#start[0]][this.#start[1]-1]==0) {this.#sdir=1;}
         if (this.#maze[this.#start[0]+1][this.#start[1]]==0) {this.#sdir=2;}
         if (this.#maze[this.#start[0]][this.#start[1]+1]==0) {this.#sdir=3;}
+    }
+    rndstartgoal() {
+        let start,goal;
+        let s = Math.floor(Math.random()*this.#deadend.length);
+        start = this.#deadend[s];
+        while (true) {
+            var e = Math.floor(Math.random()*this.#deadend.length);
+            if (e!=s) {
+                goal = this.#deadend[e];
+                break;
+            }
+        }
+        return [start,goal];
     }
 }
 class MazeSolve1 {
@@ -105,8 +115,8 @@ class MazeSolve1 {
         return this.from;
     }
     getResult() {
-        let p = maze.start[1]*maze.size[0]+maze.start[0];
-        let goalp = maze.goal[1]*maze.size[1]+maze.goal[0];
+        let p = this.#maze.start[1]*this.#maze.size[0]+this.#maze.start[0];
+        let goalp = this.#maze.goal[1]*this.#maze.size[0]+this.#maze.goal[0];
         let res = [];
         while (p!=goalp) {res.push(p);p = this.from[p];}
         res.push(goalp);
@@ -114,8 +124,8 @@ class MazeSolve1 {
     }
     searcharound() {
         let flag = false;
-        let x = maze.size[0];
-        let y = maze.size[1];
+        let x = this.#maze.size[0];
+        let y = this.#maze.size[1];
         for (let cy=0;cy<y;cy++) {
             for (let cx=0;cx<x;cx++) {
                 if (this.#maze.maze[cy][cx]==0) {continue;}
@@ -131,5 +141,5 @@ class MazeSolve1 {
 }
 class EvalMaze {
     constructor(solvemaze) {this.solvemaze = solvemaze;}
-    get() {return this.solvemaze.length}
+    get() {return (this.solvemaze.length/10)**2}
 }
