@@ -57,37 +57,6 @@
                 </div>
             </center>
         </div>
-        <div id="control_area" class="notselectable" style="visibility: hidden;"><!--control-->
-            <center>
-                <div id="control">
-                    <details id="control_details">
-                        <summary>control</summary>
-                        <table style="width: 100%;">
-                            <tr>
-                                <th style="width: 20%;"></th>
-                                <th></th>
-                                <th style="width: 20%;"></th>
-                            </tr>
-                            <tr>
-                                <td><button onclick="move(0.3)" style="width: 100%;">↑</button></td>
-                                <td><center>前後</center></td>
-                                <td><button onclick="move(-0.3)" style="width: 100%;">↓</button></td>
-                            </tr>
-                            <tr>
-                                <td><button onclick="tddraw.camangle[0]-=7" style="width: 100%;">←</button></td>
-                                <td><center>左右</center></td>
-                                <td><button onclick="tddraw.camangle[0]+=7" style="width: 100%;">→</button></td>
-                            </tr>
-                            <tr>
-                                <td><button onclick="tddraw.camangle[0]+=3" style="width: 100%;">↑</button></td>
-                                <td><center>上下</center></td>
-                                <td><button onclick="tddraw.camangle[0]-=3" style="width: 100%;">↓</button></td>
-                            </tr>
-                        </table>
-                    </details>
-                </div>
-            </center>
-        </div>
         <div id="option_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
@@ -151,7 +120,6 @@ function startnew() {
     maze = new Maze(15,15);
     flmove = maze.maze;
     mazeto3d(maze);
-    tddraw.setObj(maze.maze);
 }
 
 
@@ -228,8 +196,7 @@ function startmaze() {
     illumination = [40,10,50];
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "hidden";
-    document.getElementById("control_area").style.visibility = "visible";
-    document.getElementById("option_area").style.visibility = "hidden";
+    document.getElementById("option_area").style.visibility = "visible";
     document.getElementById("information_area").style.visibility = "visible";
     mazestarttime = Date.now();
 
@@ -254,7 +221,6 @@ function starttitle() {
     tddraw.campos = [3.0,2.0,1.1];
     tddraw.camangle = [42.5,-0.1,10];
     document.getElementById("goalmenu_area").style.visibility = "hidden";
-    document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
     document.getElementById("option_area").style.visibility = "visible";
     document.getElementById("startmenu_area").style.visibility = "hidden";
@@ -272,21 +238,19 @@ function startgoal() {
     document.exitPointerLock();
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
-    document.getElementById("control_area").style.visibility = "hidden";
-    document.getElementById("option_area").style.visibility = "visible";
+    document.getElementById("option_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
     document.getElementById("time").innerHTML = _times((Date.now()-mazestarttime)/1000);
     playlog(mazelog,stid,0,0,0);
 }
 
 function _times(second) {
-    let ms = (second*1000)%1000
-    let s = Math.floor(second%60)
-    let m = Math.floor(second%3600/60)
-    let h = Math.floor(second/3600)
+    let ms = (second*1000)%1000;
+    let s = Math.floor(second%60);
+    let m = Math.floor(second%3600/60);
+    let h = Math.floor(second/3600);
     console.log(h,m,s,ms)
     if (h==0) {
-        console.log("adfaof")
         return `${m}分${s}秒${ms}`;
     }
     return `${h}時間${m}分${s}秒${ms}`;
@@ -322,15 +286,16 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
                     }
                 }
             }
+            setTimeout(playlog,0,mazelog,sid,frame+1,paintl,mazelog[frame]);
         }
     }
     else {
         if (stid!=sid) {console.log("changed sid");return;}
         if (frame > mazelog.length-2) {console.log("end playback");return;}
+        setTimeout(playlog,0,mazelog,sid,frame+1,paintl,mazelog[frame]);
         paintl.paintLine([Math.floor(beforelog.data.campos[0]*5),Math.floor((y-beforelog.data.campos[1])*5)],[Math.floor(mazelog[frame].data.campos[0]*5),Math.floor((y-mazelog[frame].data.campos[1])*5)],[0,0,255]);
         paintl.update();
     }
-    setTimeout(playlog,0,mazelog,sid,frame+1,paintl,mazelog[frame]);
 }
 
 window.onload = function() {
@@ -438,6 +403,10 @@ function loggame(name,data=null) {
         {let oel = document.createElement("option");oel.value = "off";oel.textContent = "off";swall.appendChild(oel);}
         function setwall() {
             option.wall = swall.value=="on";
+            if (scenename=="maze") {
+                mazeto3d(maze);
+                changescene("maze");
+            }
         };
     }
 }
@@ -680,7 +649,7 @@ p {
 }
 #information_area {
     width: 100%;
-    bottom: 35px;
+    bottom: 10px;
     left: 0px;
     position: absolute;
 }
