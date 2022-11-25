@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="img_area">
-            <canvas id="imgOut" style="image-rendering: pixelated;"></canvas>
+            <canvas id="imgOut" style="image-rendering: pixelated;" onclick="pointerlock()"></canvas>
         </div>
         <div id="startmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
@@ -88,11 +88,20 @@
                 </div>
             </center>
         </div>
-        <div id="information_area" class="notselectable" style="visibility: hidden;"><!--control-->
+        <div id="option_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
                 <div id="control">
                     <ul style="width: 100%;padding: 0;margin: 0;">
                         <li style="display: inline-block;"><center><p>解像度: <select id="resolution" onchange="despl()"></select></p></center></li>
+                        <li style="display: inline-block;"><center><p>迷路の壁: <select id="setwall" onchange="setwall()"></select></p></center></li>
+                    </ul>
+                </div>
+            </center>
+        </div>
+        <div id="information_area" class="notselectable" style="visibility: hidden;"><!--control-->
+            <center>
+                <div id="control">
+                    <ul style="width: 100%;padding: 0;margin: 0;">
                         <li style="display: inline-block;"><center><p>FPS: <span id="show_fps"></span></p></center></li>
                         <li style="display: inline-block;"><center><p>座標: <span id="show_pos"></span></p></center></li>
                         <li style="display: inline-block;"><center><p>ゴールまでの距離<span id="len_togoal"></span></p></center></li>
@@ -130,9 +139,13 @@ var maze
 var illumination = [0,0,1];
 var mazestarttime = Date.now();
 var flmove = [[]];
-var mazedisplay = "HVGA";
 var mazelog = [];
 var stid = 0;
+
+var option = {
+    wall: true,
+    mazedisplay:"HVGA",
+}
 
 function startnew() {
     maze = new Maze(15,15);
@@ -154,25 +167,27 @@ function mazeto3d(maze) {
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
                 if (maze.maze[ly][lx]==0) {
-                    // // 上面
-                    //fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
-                    //fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
-                    // 横面
-                    if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
-                        fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
-                        fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
-                    }                    
-                    if (!(ly<y-1&&maze.maze[ly+1][lx]==0)) {
-                        fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
-                        fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
-                    }                    
-                    if (!(lx<x-1&&maze.maze[ly][lx+1]==0)) {
-                        fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[c[0],c[1],c[2]]]);
-                        fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[c[0],c[1],c[2]]]);
-                    }                    
-                    if (!(ly>0&&maze.maze[ly-1][lx]==0)) {
-                        fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[c[0],c[1],c[2]]]);
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[c[0],c[1],c[2]]]);
+                    if (option.wall) {
+                        // // 上面
+                        //fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
+                        //fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]])
+                        // 横面
+                        if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
+                            fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                        }                    
+                        if (!(ly<y-1&&maze.maze[ly+1][lx]==0)) {
+                            fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                        }                    
+                        if (!(lx<x-1&&maze.maze[ly][lx+1]==0)) {
+                            fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                        }                    
+                        if (!(ly>0&&maze.maze[ly-1][lx]==0)) {
+                            fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[c[0],c[1],c[2]]]);
+                        }
                     }
                 }
                 else {
@@ -193,6 +208,12 @@ function mazeto3d(maze) {
         }
     }
 
+    function pointerlock() {
+        if (scenename=="maze") {
+            co.requestPointerLock();
+            document.onmousemove = updatePosition;
+        }
+    }
 
 function startmaze() {
     mazelog=[];
@@ -200,7 +221,7 @@ function startmaze() {
     changescene("maze");
     mkimgspan = 0;
     despl();
-    tddraw.display = mazedisplay;
+    tddraw.display = option.mazedisplay;
     resizeImg();
     tddraw.campos = [maze.start[0]+0.5,maze.start[1]+0.5,0.7];
     tddraw.camangle = [45,0,10];
@@ -208,14 +229,16 @@ function startmaze() {
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "visible";
+    document.getElementById("option_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "visible";
     mazestarttime = Date.now();
 
-    co.requestPointerLock();
-    document.onmousemove = updatePosition;
+    pointerlock();
     document.addEventListener('pointerlockchange', lockChangeAlert);
     document.addEventListener('mozpointerlockchange', lockChangeAlert);
 }
+
+
 function startmenu() {
     starttitle();
     mkimgspan = 100;
@@ -233,6 +256,7 @@ function starttitle() {
     document.getElementById("goalmenu_area").style.visibility = "hidden";
     document.getElementById("control_area").style.visibility = "hidden";
     document.getElementById("information_area").style.visibility = "hidden";
+    document.getElementById("option_area").style.visibility = "visible";
     document.getElementById("startmenu_area").style.visibility = "hidden";
 }
 
@@ -249,6 +273,7 @@ function startgoal() {
     document.getElementById("startmenu_area").style.visibility = "hidden";
     document.getElementById("goalmenu_area").style.visibility = "visible";
     document.getElementById("control_area").style.visibility = "hidden";
+    document.getElementById("option_area").style.visibility = "visible";
     document.getElementById("information_area").style.visibility = "hidden";
     document.getElementById("time").innerHTML = _times((Date.now()-mazestarttime)/1000);
     playlog(mazelog,stid,0,0,0);
@@ -293,7 +318,7 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
                 }
                 for (let lyi=0;lyi<5;lyi++) {
                     for (let lxi=0;lxi<5;lxi++) {
-                        paintl.paintDot(lx*5+lxi,ly*5+lyi,flcolor);
+                        paintl.paintDot(lx*5+lxi,(y-ly-1)*5+lyi,flcolor);
                     }
                 }
             }
@@ -302,7 +327,7 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
     else {
         if (stid!=sid) {console.log("changed sid");return;}
         if (frame > mazelog.length-2) {console.log("end playback");return;}
-        paintl.paintLine([Math.floor(beforelog.data.campos[0]*5),Math.floor(beforelog.data.campos[1]*5)],[Math.floor(mazelog[frame].data.campos[0]*5),Math.floor(mazelog[frame].data.campos[1]*5)],[0,0,255]);
+        paintl.paintLine([Math.floor(beforelog.data.campos[0]*5),Math.floor((y-beforelog.data.campos[1])*5)],[Math.floor(mazelog[frame].data.campos[0]*5),Math.floor((y-mazelog[frame].data.campos[1])*5)],[0,0,255]);
         paintl.update();
     }
     setTimeout(playlog,0,mazelog,sid,frame+1,paintl,mazelog[frame]);
@@ -368,26 +393,25 @@ function loggame(name,data=null) {
 }
 
 
-let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
-        "112 63": [112,63,16,9],
-        "QQVGA": [160,120,4,3],
-        "QVGA": [320,240,4,3],
-        "HVGA": [480,320,3,2],
-        "VGA": [640,480,4,3],
-        "SVGA": [800,600,4,3],
-        "XGA": [1024,768,4,3],
-        "HD": [1280,720,16,9],
-        "SXGA": [1280,1024,5,4],
-        "UXGA": [1600,1200,4,3],
-        "FHD": [1920,1080,16,9],
-        "4K": [3840,2160,16,9],
-       // "8K": [7680,4320,16,9],
-    };
-
-    var drsel;
+{
     {
+        var display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),displayscale]
+            "112 63": [112,63,16,9],
+            "QQVGA": [160,120,4,3],
+            "QVGA": [320,240,4,3],
+            "HVGA": [480,320,3,2],
+            "VGA": [640,480,4,3],
+            "SVGA": [800,600,4,3],
+            "XGA": [1024,768,4,3],
+            "HD": [1280,720,16,9],
+            "SXGA": [1280,1024,5,4],
+            "UXGA": [1600,1200,4,3],
+            "FHD": [1920,1080,16,9],
+            "4K": [3840,2160,16,9],
+        // "8K": [7680,4320,16,9],
+        };
         // make display resolution list
-        drsel = document.getElementById("resolution");
+        var drsel = document.getElementById("resolution");
         let dlkeys = Object.keys(display_list);
         for (i=0;i<dlkeys.length;i++) {
             oel = document.createElement("option");
@@ -398,16 +422,25 @@ let display_list = { // "name": [width,height,aspectraito(w),aspectraito(h),disp
             oel.textContent = dlkeys[i];
             drsel.appendChild(oel);
         }
-        drsel.value = mazedisplay;
+        drsel.value = option.mazedisplay;
         tddraw.display = display_list[drsel.value];
-        mazedisplay = display_list[drsel.value];
+        option.mazedisplay = display_list[drsel.value];
         resizeImg();
         function despl() {
             tddraw.display = display_list[drsel.value];
-            mazedisplay = display_list[drsel.value];
+            option.mazedisplay = display_list[drsel.value];
             resizeImg();
         };
     }
+    {
+        var swall = document.getElementById("setwall");
+        {let oel = document.createElement("option");oel.value = "on";oel.textContent = "on";swall.appendChild(oel);}
+        {let oel = document.createElement("option");oel.value = "off";oel.textContent = "off";swall.appendChild(oel);}
+        function setwall() {
+            option.wall = swall.value=="on";
+        };
+    }
+}
     
     {
         function changescene(name) {
@@ -606,6 +639,7 @@ body::-webkit-scrollbar {
     display: none;
 }
 body {
+    width: 100vw;
     overflow: hidden;
     -ms-overflow-style: none;    /* IE, Edge 対応 */
     scrollbar-width: none;       /* Firefox 対応 */
@@ -623,6 +657,12 @@ p {
     z-index: -1;
 }
 
+#option_area {
+    width: 100%;
+    top: 10px;
+    left: 0px;
+    position: absolute;
+}
 #control_area {
     width: 100%;
     top: 10px;
