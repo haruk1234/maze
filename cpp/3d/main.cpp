@@ -1,11 +1,14 @@
 #include <windows.h>
 #include <iostream>
 #include "3d.h"
-#include "fread.h"
-#include "maze.h"
+#include "../maze.h"
 
 tdDraw tddraw;
 tdDrawObject showobject;
+
+tdDrawObject getmaze3d() {
+	return {};
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 	HDC hdc;
@@ -49,7 +52,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,PSTR lpCmdLine,int nCmdShow) {
 	std::cout << "file: " << lpCmdLine << std::endl;
-	showobject = read(lpCmdLine);
+	showobject = getmaze3d();
 
 	HWND hwnd;
 	MSG msg;

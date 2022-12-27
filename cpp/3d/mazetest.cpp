@@ -1,5 +1,5 @@
 #include <iostream>
-#include "maze.h"
+#include "../maze.h"
 
 
 Maze maze(10,10);
