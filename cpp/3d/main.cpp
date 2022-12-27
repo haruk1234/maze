@@ -6,8 +6,31 @@
 tdDraw tddraw;
 tdDrawObject showobject;
 
+
+struct MazeOption {
+    bool wall = true;
+};
+
+Maze maze(15,15);
+MazeOption option;
+tdDrawPolygon arraytopoly(std::array<int,12> a) {
+    return {{a[0],a[1],a[2]},{a[3],a[4],a[5]},{a[6],a[7],a[8]},{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}};
+}
 tdDrawObject getmaze3d() {
-	return {};
+	tdDrawObject m3d = {};
+	for (int ly=0;ly<maze.size[1];ly++) {
+		for (int lx=0;lx<maze.size[0];lx++) {
+			if (maze.maze[ly][lx]==0) {
+				if (option.wall) {
+				}
+			}
+			else {
+				m3d.insert(m3d.end(),arraytopoly({lx,ly,0,lx+1,ly,0,lx+1,ly+1,0,255,255,255}));
+				m3d.insert(m3d.end(),arraytopoly({lx,ly+1,0,lx,ly,0,lx+1,ly+1,0,255,255,255}));
+			}
+		}
+	}
+	return m3d;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
@@ -24,7 +47,9 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 		PostQuitMessage(0);
 		return 0;
 	case WM_CREATE:
+		showobject = getmaze3d();
 		tddraw.setObj(showobject);
+		tddraw.setCamera({0,0,2},{45*(pi/180),0*(pi/180)});
 		return 0;
 	case WM_PAINT:
 		GetWindowRect(hwnd, &rect);
@@ -51,8 +76,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 }
 
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,PSTR lpCmdLine,int nCmdShow) {
-	std::cout << "file: " << lpCmdLine << std::endl;
-	showobject = getmaze3d();
 
 	HWND hwnd;
 	MSG msg;
