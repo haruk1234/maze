@@ -1,10 +1,10 @@
-# Neknaj Maze
+# Neknaj Maze JS
 
 # maze.js
 
 ## 迷路の自動生成  
 ### 実行する
-[go](https://neknaj.github.io/maze/generator)
+[go](https://neknaj.github.io/maze/js/generator)
 
 ## 使用方法
 classを初期化する  
@@ -22,7 +22,7 @@ maze.sdir // スタートの向き
 
 ## 迷路を自動で解く
 ### 実行する
-[go](https://neknaj.github.io/maze/auto/1)
+[go](https://neknaj.github.io/maze/js/auto/1)
 
 ## 使用方法
 classを初期化する  
@@ -40,7 +40,7 @@ route // 迷路の解
 ![image](https://user-images.githubusercontent.com/79097169/202878011-c798674f-2900-4c18-8a2a-8331f46a7a45.png)
 
 
-# 3D Maze
+# 3D Maze Browser
 自動生成された迷路で遊ぶ  
-[go](https://neknaj.github.io/maze/3d)  
+[go](https://neknaj.github.io/maze/js/3d)  
 ![image](https://user-images.githubusercontent.com/79097169/202878028-e6fc92b0-a5d9-4210-bc6f-4c2d9997b0eb.png)
