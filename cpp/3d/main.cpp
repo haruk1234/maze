@@ -11,7 +11,7 @@ struct MazeOption {
     bool wall = true;
 };
 
-Maze maze(15,15);
+Maze maze(150,150);
 MazeOption option;
 tdDrawPolygon arraytopoly(std::array<int,12> a) {
     return {{a[0],a[1],a[2]},{a[3],a[4],a[5]},{a[6],a[7],a[8]},{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}};
@@ -23,8 +23,8 @@ tdDrawObject getmaze3d() {
 		for (int lx=0;lx<x;lx++) {
 			if (maze.maze[ly][lx]==0) {
 				if (option.wall) {
-					m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx+1,ly,1,lx+1,ly+1,1,255,255,255}));
-					m3d.insert(m3d.end(),arraytopoly({lx,ly+1,1,lx,ly,1,lx+1,ly+1,1,255,255,255}));
+					// m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx+1,ly,1,lx+1,ly+1,1,255,255,255}));
+					// m3d.insert(m3d.end(),arraytopoly({lx,ly+1,1,lx,ly,1,lx+1,ly+1,1,255,255,255}));
 					if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
 						m3d.insert(m3d.end(),arraytopoly({lx,ly,0,lx,ly,1,lx,ly+1,0,255,255,255}));
 						m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx,ly+1,1,lx,ly+1,0,255,255,255}));
