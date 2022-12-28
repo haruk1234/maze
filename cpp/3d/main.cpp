@@ -1,22 +1,25 @@
 #include <windows.h>
 #include <iostream>
+#include <chrono>
 #include "3d.h"
 #include "../maze.h"
 
 tdDraw tddraw;
 tdDrawObject showobject;
+std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 
 
 struct MazeOption {
     bool wall = true;
 };
 
-Maze maze(150,150);
 MazeOption option;
 tdDrawPolygon arraytopoly(std::array<int,12> a) {
     return {{a[0],a[1],a[2]},{a[3],a[4],a[5]},{a[6],a[7],a[8]},{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}};
 }
 tdDrawObject getmaze3d() {
+	Maze maze(15,15);
 	tdDrawObject m3d = {};
 	int x = maze.size[0];int y = maze.size[1];
 	for (int ly=0;ly<y;ly++) {
@@ -87,6 +90,12 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 		hdc=BeginPaint(hwnd,&ps);
 		{ // 3d
 			lpPixel = tddraw.getImg(width,height,true);
+			{
+				end = std::chrono::system_clock::now();
+				int msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+				std::cout << "\033[2K\033[1G" << "f " << tddraw.frame << " ms" << msec << " fps" << (double)1000/msec;
+				start = std::chrono::system_clock::now();
+			}
 			SetDIBitsToDevice(hdc,0,0,width,height,0,0,0,height,lpPixel,&bmpInfo,DIB_RGB_COLORS);
 		}
 		EndPaint(hwnd,&ps);
