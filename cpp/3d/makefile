@@ -8,13 +8,11 @@ runexe:
 	./main.exe
 
 xcompile:
-	g++ xmain.cpp -o xmain -lX11 -O3
+	g++ xmain.cpp -o xmain.o -lX11 -O3
 xcompileO:
-	g++ xmain.cpp -o xmain -lX11
+	g++ xmain.cpp -o xmain.o -lX11
 xrun:
-	./xmain
-xrunexe:
-	./xmain.exe
+	./xmain.o
 
 mazetest:
 	g++ mazetest.cpp -o mazetest

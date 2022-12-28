@@ -86,7 +86,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 		bmpInfo.bmiHeader.biCompression=BI_RGB;
 		hdc=BeginPaint(hwnd,&ps);
 		{ // 3d
-			lpPixel = tddraw.getImg(width,height);
+			lpPixel = tddraw.getImg(width,height,true);
 			SetDIBitsToDevice(hdc,0,0,width,height,0,0,0,height,lpPixel,&bmpInfo,DIB_RGB_COLORS);
 		}
 		EndPaint(hwnd,&ps);

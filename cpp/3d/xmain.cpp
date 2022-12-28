@@ -55,66 +55,26 @@ tdDrawObject getmaze3d() {
 	return m3d;
 }
 
-// struct DIBImage {
-//     int width;
-//     int heiht;
-//     int n_color;
-//     unsigned char pallette[256][3];
-//     unsigned char* data;
-// };
-
-// XColor*  colors;
-// Pixmap   pixmap;
-
+XImage *get3dImg(Display *display, Visual *visual, unsigned char *image, int width, int height)
+{
+	unsigned char* lpPixel = tddraw.getImg(width,height);
+    return XCreateImage(display, visual, DefaultDepth(display,DefaultScreen(display)), ZPixmap, 0, (char*)lpPixel, width, height, 32, 0);
+}
 void paint(Display*d,Window w,int screen,GC gc){
 
 	unsigned int width, height;
 	unsigned int dummy;
 	XGetGeometry( d, w, (Window*)&dummy, (int*)&dummy, (int*)&dummy, &width, &height, &dummy, &dummy );
 
+    XImage *ximage;
+    Visual *visual=DefaultVisual(d, 0);
 
-	unsigned char* lpPixel = tddraw.getImg(width,height);
-
-	Colormap    colormap; 
-	XColor      near_color, true_color;
-	colormap = DefaultColormap( d, screen ); 
-
-    for (int iy=0;iy<height;iy++) {
-        for (int ix=0;ix<width;ix++) {
-            XColor col;
-            int idx = ((height-iy)*width+ix)*4;
-            col.red = lpPixel[idx+2]*255;
-            col.green = lpPixel[idx+1]*255;
-            col.blue = lpPixel[idx+0]*255;
-            XAllocColor(d,colormap,&col);
-            XSetForeground( d, gc, col.pixel );
-            XDrawPoint(d,w,gc,ix,iy);
-        }
-    }
-//	XFillRectangle(d,w,gc,10,10,width-20,height-20);
+    ximage=get3dImg(d, visual, 0, width, height);
+    XSelectInput(d, w, ButtonPressMask|ExposureMask);
+    XMapWindow(d, w);
+    XPutImage(d, w, DefaultGC(d, 0), ximage, 0, 0, 0, 0, width, height);
 
 	XFlush( d );
-}
-
-void setup(Display*d,Window w,int screen,GC gc) {
-	unsigned int width, height;
-	unsigned int dummy;
-	XGetGeometry( d, w, (Window*)&dummy, (int*)&dummy, (int*)&dummy, &width, &height, &dummy, &dummy );
-
-    // XImage* ximage;
-	// unsigned char* lpPixel = tddraw.getImg(width,height);
-    // colors = new XColor [width*height];
-    // for (int i=0;i<width*height;i++) {
-    //     colors[i].red = lpPixel[i*4+2];
-    //     colors[i].green = lpPixel[i*4+1];
-    //     colors[i].blue = lpPixel[i*4+0];
-    //     colors[i].flags = DoRed | DoGreen | DoBlue;
-    // }
-    // pixmap = XCreatePixmap(d,w,width,height,32);
-    // ximage = XCreateImage(d,DefaultVisual(d,screen), 32,ZPixmap,0,(char*)lpPixel,width,height,32,0);
-    // //XPutImage(d,pixmap,gc,ximage,0,0,0,0,width,height);
-    // XFlush(d);
-    // XDestroyImage(ximage);
 }
 
 int main(){
@@ -136,15 +96,15 @@ int main(){
 	screen=DefaultScreen(d);
 
 	w = XCreateSimpleWindow( d, RootWindow(d,screen),
-						0, 0, 170, 130,// Window Size
+						0, 0, 500, 400,// Window Size
 						1,BlackPixel(d,screen),
 						WhitePixel(d,screen));
 
 	attr.backing_store = WhenMapped;
 	XChangeWindowAttributes( d, w, CWBackingStore, &attr); 
 
-	XStoreName(d, w, "test Window");
-	XSetIconName(d, w, "test Window");
+	XStoreName(d, w, "Neknaj 3D Maze");
+	XSetIconName(d, w, "Neknaj 3D Maze");
 
 	gc = XCreateGC( d, RootWindow( d,screen ), 0, 0); 
 
@@ -154,7 +114,6 @@ int main(){
 
 	Atom atom1,atom2;
 	atom1 = XInternAtom(d, "WM_PROTOCOLS", False);
-	atom2 = XInternAtom(d, "WM_DELETE_WINDOW", False);
 	XSetWMProtocols(d, w, &atom2,1);
 
 	XMapWindow( d, w );
@@ -170,11 +129,6 @@ int main(){
 				paint(d,w,screen,gc);
 				break;
 			case ClientMessage:
-                // close window
-				if ( event.xclient.message_type == atom1 && event.xclient.data.l[0] == atom2 ){
-					XCloseDisplay(d);
-					exit(0);
-				}
     			break;
 			default:
 				break;

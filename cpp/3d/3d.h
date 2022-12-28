@@ -42,7 +42,7 @@ class tdDraw {
             campos = new_campos;
             camangle = new_camangle;
         }
-        unsigned char* getImg (int width,int height) {
+        unsigned char* getImg (int width,int height,bool bu=false) {
             display[0] = width;display[1] = height;
 
             frame++;
@@ -89,7 +89,8 @@ class tdDraw {
                 double cp = p3[2];
                 for (int iy=ymin;iy<ymax;iy++) {
                     for (int ix=xmin;ix<xmax;ix++) {
-                        int idex = (height-iy)*x+ix;
+                        int idex = iy*x+ix;
+                        if (bu) {idex = (height-iy)*x+ix;}
                         if (inclusion((t2da){(double)ix,(double)iy},{p1,p2,p3})) {
                             tda td = is_p({p1,(tda){(double)ix,(double)iy,0.0}},{p2,p3});
 
