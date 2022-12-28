@@ -1,5 +1,5 @@
 compile:
-	g++ main.cpp -lgdi32 -o main -O3
+	g++ main.cpp -lgdi32 -o main -O
 compileO:
 	g++ main.cpp -lgdi32 -o main
 run:
