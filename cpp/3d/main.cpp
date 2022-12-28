@@ -11,7 +11,7 @@ struct MazeOption {
     bool wall = true;
 };
 
-Maze maze(15,15);
+Maze maze(200,200);
 MazeOption option;
 tdDrawPolygon arraytopoly(std::array<int,12> a) {
     return {{a[0],a[1],a[2]},{a[3],a[4],a[5]},{a[6],a[7],a[8]},{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}};
