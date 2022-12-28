@@ -1,3 +1,4 @@
+/* Neknaj 3D Lib - Javascript */
 /* bem130 2022 */
 /* https://github.com/neknaj/3d */
 
@@ -19,7 +20,7 @@ class tdDRAW {
     }
 
     getImg() {
-        this.sortPolygon();
+        //this.sortPolygon();
         this.frame++;
         let x = this.display[0];
         let y = this.display[1];
@@ -46,7 +47,6 @@ class tdDRAW {
             let v13 = [t[2][0]-t[0][0],t[2][1]-t[0][1],t[2][2]-t[0][2]];
             let normal = this.VNormalized(this.VCProduct(v12,v13)); //法線ベクトル
             let angl = this.VIProduct(vl,normal); // 0<=normal<=1
-            let light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(polygons[i][4]+1000)); // 面と平行光源の角度
             
             // 三角形を描画する範囲
             let xmax = Math.min(Math.max(p1[0],p2[0],p3[0]),this.display[0]);
@@ -67,16 +67,16 @@ class tdDRAW {
                         if (this.inclusion([ix,iy],[p1,p2,p3])) { // 三角形の内外判定
                             let td = this.is_p( [p1,[ix,iy]],[p2,p3]);
 
-                            let dl = bl+(this.length2d([p2,td])/this.length2d([p2,p3]))*(cl-bl);
-                            let pl = al+(this.length2d([p1,[ix,iy]])/this.length2d([p1,td]))*(dl-al);
+                            let l1 = this.length2d([p2,td])/this.length2d([p2,p3]);
+                            let l2 = this.length2d([p1,[ix,iy,0.0]])/this.length2d([p1,td]);
 
-                            let dp = bp+(this.length2d([p2,td])/this.length2d([p2,p3]))*(cp-bp);
-                            let pp = ap+(this.length2d([p1,[ix,iy]])/this.length2d([p1,td]))*(dp-ap);
+                            let pl = al+l2*(bl+l1*(cl-bl)-al);
+                            let pp = ap+l2*(bp+l1*(cp-bp)-ap);
 
                             if (pp>0&&zbuf[idex]>pl) {
                                 zbuf[idex] = pl;
                                 let index = idex*4;
-                                light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(pl**2+1000)); // 面と平行光源の角度
+                                let light = (Math.max(angl,angl*0.1)*0.9+0.3)*(1000/(pl**2+1000)); // 面と平行光源の角度
                                 iarr[index+0] = t[3][0]*light; // 赤の描画
                                 iarr[index+1] = t[3][1]*light; // 緑の描画
                                 iarr[index+2] = t[3][2]*light; // 青の描画
@@ -107,7 +107,7 @@ class tdDRAW {
         while (i<psl) {
             let j=0;let jm = psl-i-1;
             while (j<jm||j<100) {
-                if (ps[j][7]>ps[j+1][7]) {
+                if (ps[j][4]>ps[j+1][4]) {
                     bu = ps[j+1];
                     ps[j+1] = ps[j];
                     ps[j] = bu;
@@ -172,7 +172,7 @@ class tdDRAW {
         let ab = a[0]*b[1]-a[1]*b[0];
         let bc = b[0]*c[1]-b[1]*c[0];
         let ca = c[0]*a[1]-c[1]*a[0];
-        return ab<=0&&bc<=0&&ca<=0;
+        return (ab<=0&&bc<=0&&ca<=0)||(ab>=0&&bc>=0&&ca>=0);
     };
     rotate3d_x(pos) { // x軸のみの回転
         return [pos[0],pos[1]*this.trifv[3]-pos[2]*this.trifv[2],pos[1]*this.trifv[2]+pos[2]*this.trifv[3]];
