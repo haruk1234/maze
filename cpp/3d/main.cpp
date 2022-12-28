@@ -11,7 +11,7 @@ struct MazeOption {
     bool wall = true;
 };
 
-Maze maze(200,200);
+Maze maze(15,15);
 MazeOption option;
 tdDrawPolygon arraytopoly(std::array<int,12> a) {
     return {{a[0],a[1],a[2]},{a[3],a[4],a[5]},{a[6],a[7],a[8]},{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}};
@@ -49,7 +49,7 @@ tdDrawObject getmaze3d() {
 			}
 		}
 	}
-    std::cerr << m3d.size() << " polygons generated" << std::endl;
+    std::cout << m3d.size() << " polygons generated" << std::endl;
 	return m3d;
 }
 
@@ -67,12 +67,13 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 		PostQuitMessage(0);
 		return 0;
 	case WM_CREATE:
+   		std::cout << "Neknaj 3D Maze Desktop" << std::endl;
 		showobject = getmaze3d();
 		tddraw.setObj(showobject);
 		tddraw.setCamera({-5,-5,2},{45*(pi/180),0*(pi/180)});
 		return 0;
 	case WM_PAINT:
-		GetWindowRect(hwnd, &rect);
+		GetClientRect(hwnd, &rect);
 		int width = rect.right - rect.left;
 		int height = rect.bottom - rect.top;
 		// std::cout << width << " " << height << std::endl; // output window size
@@ -96,7 +97,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 }
 
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,PSTR lpCmdLine,int nCmdShow) {
-
 	HWND hwnd;
 	MSG msg;
 	WNDCLASS winc;

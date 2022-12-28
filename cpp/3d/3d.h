@@ -46,7 +46,7 @@ class tdDraw {
             display[0] = width;display[1] = height;
 
             frame++;
-		    std::cout << "f " << frame << std::endl;
+		    std::cout << "\033[2K\033[1G" << "f " << frame;
             int x = width;int y = height;
             double maxlen = 100;
 
