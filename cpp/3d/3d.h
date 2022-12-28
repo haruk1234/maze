@@ -6,16 +6,31 @@
 #define NeknajtdDraw
 
 #include <cmath>
+#include <string>
 #include <array>
 #include <vector>
+#include <map>
 
+typedef std::array<unsigned char,3> tdDrawColor;
+typedef std::vector<std::vector<tdDrawColor>> tdDrawTextureImage;
+typedef std::map<std::string,tdDrawTextureImage> tdDrawTextureSet;
+struct tdDrawTexturePath {
+    bool useTexture;
+    std::string name;
+    std::array<double,2> p1;
+    std::array<double,2> p2;
+    std::array<double,2> p3;
+    tdDrawTextureSet* textureset;
+};
 struct tdDrawPolygon {
     std::array<double,3> p1;
     std::array<double,3> p2;
     std::array<double,3> p3;
-    std::array<unsigned char,3> color;
-    double distance = 0;
+    tdDrawColor color;
+    tdDrawTexturePath texture;
 };
+
+
 typedef std::vector<struct tdDrawPolygon> tdDrawObject;
 unsigned char* iarr;
 const double pi = 3.14159;

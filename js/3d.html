@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="img_area">
-            <canvas id="imgOut" style="image-rendering: pixelated;" onclick="pointerlock()"></canvas>
+            <canvas id="imgOut" style="" onclick="pointerlock()"></canvas>
         </div>
         <div id="startmenu_area" class="notselectable" style="visibility: hidden;"><!--control-->
             <center>
@@ -84,17 +84,21 @@
     var scene = {};
 </script>
 <script src="3d.js"></script>
-<script src="obj.js"></script>
 <script src="maze.js"></script>
 <script src="2d.js"></script>
 <script src="paint.js"></script>
 <script>
 
+//tmp
+scene['title'] = []
+scene['goal'] = []
+//
+
 let cframe = 0;
 
     
 var tddraw = new tdDRAW();
-tddraw.setCamera([[1.2,1.2,0.7],[90,0],[1920,1080]]);
+tddraw.setCamera([[1.2,1.2,1],[90,0],[1920,1080]]);
 var co = document.getElementById("imgOut");
 var ctx = co.getContext('2d');
 co.height=tddraw.display[1];co.width=tddraw.display[0];
@@ -122,6 +126,30 @@ function startnew() {
     mazeto3d(maze);
 }
 
+async function loadImage(imgUrl){
+    var img = null;
+    var promise = new Promise(function(resolve){
+        img = new Image();
+        img.onload = function(){
+            resolve();
+        }
+        img.src = imgUrl;
+    });
+    await promise;
+
+    let canvas = document.createElement("canvas");
+    canvas.height = img.naturalHeight;
+    canvas.width = img.naturalWidth;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(img,0,0);
+    return ctx.getImageData(0,0,img.naturalWidth,img.naturalHeight);
+}
+let texture = {};
+async function loadtextures() {
+    texture.road = await loadImage("../texture/road.jpg");
+    texture.grass = await loadImage("../texture/grass.jpg");
+    texture.soil = await loadImage("../texture/soil.jpg");
+}
 
 function mazeto3d(maze) {
         let x = maze.maze[0].length;
@@ -132,47 +160,48 @@ function mazeto3d(maze) {
         fc = [242,240,254];
         sfc = [212,210,25];
         efc = [112,70,220];
+        console.log(texture)
         for (let ly=0;ly<y;ly++) {
             for (let lx=0;lx<x;lx++) {
                 if (maze.maze[ly][lx]==0) {
+                    fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]],[true,"grass",[0,0],[1256,0],[1256,1256],texture]])
+                    fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]],[true,"grass",[0,0],[1256,0],[1256,1256],texture]])
                     if (option.wall) {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
                         // // 上面
                         // fmaze.push([[lx,ly,1],[lx+1,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
                         // fmaze.push([[lx,ly+1,1],[lx,ly,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
                         // 横面
                         if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
-                            fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
-                            fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx,ly,0],[lx,ly,1],[lx,ly+1,0],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
+                            fmaze.push([[lx,ly,1],[lx,ly+1,1],[lx,ly+1,0],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
                         }
                         if (!(ly<y-1&&maze.maze[ly+1][lx]==0)) {
-                            fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
-                            fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx,ly+1,0],[lx,ly+1,1],[lx+1,ly+1,1],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
+                            fmaze.push([[lx+1,ly+1,0],[lx,ly+1,0],[lx+1,ly+1,1],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
                         }
                         if (!(lx<x-1&&maze.maze[ly][lx+1]==0)) {
                             
-                            fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[c[0],c[1],c[2]]]);
-                            fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx+1,ly+1,0],[lx+1,ly+1,1],[lx+1,ly,1],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
+                            fmaze.push([[lx+1,ly,0],[lx+1,ly+1,0],[lx+1,ly,1],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
                         }
                         if (!(ly>0&&maze.maze[ly-1][lx]==0)) {
-                            fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[c[0],c[1],c[2]]]);
-                            fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[c[0],c[1],c[2]]]);
+                            fmaze.push([[lx+1,ly,0],[lx+1,ly,1],[lx,ly,1],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
+                            fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx,ly,1],[c[0],c[1],c[2]],[true,"road",[0,0],[637,0],[637,637],texture]]);
                         }
                     }
                 }
                 else {
                     if (ly==maze.start[1]&&lx==maze.start[0]) {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]]])
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]],[false]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[sfc[0],sfc[1],sfc[2]],[false]])
                     }
                     else if (ly==maze.goal[1]&&lx==maze.goal[0]) {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]]])
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]],[false]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[efc[0],efc[1],efc[2]],[false]])
                     }
                     else {
-                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
-                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]]])
+                        fmaze.push([[lx,ly,0],[lx+1,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]],[true,"soil",[0,0],[1269,0],[1269,1269],texture]])
+                        fmaze.push([[lx,ly+1,0],[lx,ly,0],[lx+1,ly+1,0],[fc[0],fc[1],fc[2]],[true,"soil",[0,1269],[0,0],[1269,1269],texture]])
                     }
                 }
             }
@@ -301,7 +330,8 @@ function playlog(mazelog,sid,frame,paintl,beforelog) {
     }
 }
 
-window.onload = function() {
+window.onload = async function() {
+    loadtextures();
     mkimg();
     if (!co.requestPointerLock) {
         document.pointerLockElement = function() {}
