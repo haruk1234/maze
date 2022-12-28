@@ -23,6 +23,8 @@ tdDrawObject getmaze3d() {
 		for (int lx=0;lx<x;lx++) {
 			if (maze.maze[ly][lx]==0) {
 				if (option.wall) {
+					m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx+1,ly,1,lx+1,ly+1,1,255,255,255}));
+					m3d.insert(m3d.end(),arraytopoly({lx,ly+1,1,lx,ly,1,lx+1,ly+1,1,255,255,255}));
 					if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
 						m3d.insert(m3d.end(),arraytopoly({lx,ly,0,lx,ly,1,lx,ly+1,0,255,255,255}));
 						m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx,ly+1,1,lx,ly+1,0,255,255,255}));
@@ -67,7 +69,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 	case WM_CREATE:
 		showobject = getmaze3d();
 		tddraw.setObj(showobject);
-		tddraw.setCamera({0,0,2},{45*(pi/180),0*(pi/180)});
+		tddraw.setCamera({-5,-5,2},{45*(pi/180),0*(pi/180)});
 		return 0;
 	case WM_PAINT:
 		GetWindowRect(hwnd, &rect);
