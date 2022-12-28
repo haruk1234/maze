@@ -18,10 +18,27 @@ tdDrawPolygon arraytopoly(std::array<int,12> a) {
 }
 tdDrawObject getmaze3d() {
 	tdDrawObject m3d = {};
-	for (int ly=0;ly<maze.size[1];ly++) {
-		for (int lx=0;lx<maze.size[0];lx++) {
+	int x = maze.size[0];int y = maze.size[1];
+	for (int ly=0;ly<y;ly++) {
+		for (int lx=0;lx<x;lx++) {
 			if (maze.maze[ly][lx]==0) {
 				if (option.wall) {
+					if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
+						m3d.insert(m3d.end(),arraytopoly({lx,ly,0,lx,ly,1,lx,ly+1,0,255,255,255}));
+						m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx,ly+1,1,lx,ly+1,0,255,255,255}));
+					}
+					if (!(ly<y-1&&maze.maze[ly+1][lx]==0)) {
+						m3d.insert(m3d.end(),arraytopoly({lx,ly+1,0,lx,ly+1,1,lx+1,ly+1,1,255,255,255}));
+						m3d.insert(m3d.end(),arraytopoly({lx+1,ly+1,0,lx,ly+1,0,lx+1,ly+1,1,255,255,255}));
+					}
+                    if (!(lx<x-1&&maze.maze[ly][lx+1]==0)) {
+						m3d.insert(m3d.end(),arraytopoly({lx+1,ly+1,0,lx+1,ly+1,1,lx+1,ly,1,255,255,255}));
+						m3d.insert(m3d.end(),arraytopoly({lx+1,ly,0,lx+1,ly+1,0,lx+1,ly,1,255,255,255}));
+					}
+					if (!(ly>0&&maze.maze[ly-1][lx]==0)) {
+						m3d.insert(m3d.end(),arraytopoly({lx+1,ly,0,lx+1,ly,1,lx,ly,1,255,255,255}));
+						m3d.insert(m3d.end(),arraytopoly({lx,ly,0,lx+1,ly,0,lx,ly,1,255,255,255}));
+					}
 				}
 			}
 			else {
@@ -30,6 +47,7 @@ tdDrawObject getmaze3d() {
 			}
 		}
 	}
+    std::cerr << m3d.size() << " polygons generated" << std::endl;
 	return m3d;
 }
 
