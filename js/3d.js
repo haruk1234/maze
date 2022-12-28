@@ -25,9 +25,13 @@ class tdDRAW {
         let x = this.display[0];
         let y = this.display[1];
         let maxlen = 100;
+        let sky = [114,174,239];
         let iarr = new Uint8ClampedArray(x*y*4).fill(0);
         let zbuf = new Array(x*y).fill(maxlen);
         for (let i = 0; i < x*y; i++) {
+            iarr[i*4+0] = sky[0];
+            iarr[i*4+1] = sky[1];
+            iarr[i*4+2] = sky[2];
             iarr[i*4+3] = 255;
         }
         let polygons = this.obj;
