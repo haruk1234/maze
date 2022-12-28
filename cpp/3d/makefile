@@ -3,13 +3,17 @@ compile:
 compileO:
 	g++ main.cpp -lgdi32 -o main
 run:
+	./main
+runexe:
 	./main.exe
 
 xcompile:
-	g++ main.cpp -o xmain -O3
+	g++ xmain.cpp -o xmain -lX11 -O3
 xcompileO:
-	g++ main.cpp -o xmain
+	g++ xmain.cpp -o xmain -lX11
 xrun:
+	./xmain
+xrunexe:
 	./xmain.exe
 
 mazetest:
