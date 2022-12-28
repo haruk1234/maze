@@ -6,6 +6,20 @@
 #include <cmath>
 #include <random>
 
+// https://ja.wikipedia.org/wiki/Xorshift
+struct xorshift64_state {
+  uint64_t a;
+};
+uint64_t xorshift64(struct xorshift64_state *state)
+{
+	uint64_t x = state->a;
+	x ^= x << 7;
+	x ^= x >> 9;
+	return state->a = x;
+}
+//
+
+
 typedef std::vector<std::vector<unsigned char>> MazeObj;
 class Maze {
     private:
@@ -25,15 +39,17 @@ class Maze {
         std::array<int,2> osize;
         std::vector<location> deadend;
         std::random_device rnd;
+        xorshift64_state rndm;
         void makemaze() {
+            rndm.a = rnd();
             int x = osize[0];int y = osize[1];
             size[0] = x*2+1;size[1] = y*2+1;
             maze.clear();
             maze.assign(y*2+1,std::vector<unsigned char>(x*2+1,0));
-            maze[std::floor(rnd()%y)*2+1][std::floor(rnd()%x)*2+1] = 1;
+            maze[std::floor(xorshift64(&rndm)%y)*2+1][std::floor(xorshift64(&rndm)%x)*2+1] = 1;
             while (searchwall(x,y)) {
-                int lx = std::floor(rnd()%x);
-                int ly = std::floor(rnd()%y);
+                int lx = std::floor(xorshift64(&rndm)%x);
+                int ly = std::floor(xorshift64(&rndm)%y);
                 std::vector<char> ra = searcharound(lx,ly,x,y);
                 makenewroad(lx,ly,ra);
             }
@@ -59,7 +75,7 @@ class Maze {
         bool makenewroad(int cx,int cy,std::vector<char> ard) {
             if (ard.size()<1) {return false;}
             int ax = cx*2+1;int ay = cy*2+1;
-            int car = ard[std::floor(rnd()%ard.size())];
+            int car = ard[std::floor(xorshift64(&rndm)%ard.size())];
             switch (car)
             {
                 case 1:
