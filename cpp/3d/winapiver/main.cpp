@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <iostream>
 #include <chrono>
-#include "3d.h"
-#include "../maze.h"
+#include "../3d.h"
+#include "../../maze.h"
 
 tdDraw tddraw;
 tdDrawObject showobject;

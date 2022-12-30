@@ -1,8 +1,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <iostream>
-#include "3d.h"
-#include "../maze.h"
+#include "../3d.h"
+#include "../../maze.h"
 
 
 tdDraw tddraw;
