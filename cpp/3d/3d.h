@@ -32,10 +32,14 @@ struct tdDrawPolygon {
 
 
 typedef std::vector<struct tdDrawPolygon> tdDrawObject;
-unsigned char* iarr;
+//unsigned char* iarr;
 const double pi = 3.14159;
 
 class tdDraw {
+    private:
+        typedef std::array<double,3> tda;
+        typedef std::array<double,2> t2da;
+        typedef unsigned char uchar;
     public:
         std::array<double,3> campos = {0,0,0};
         std::array<double,2> camangle = {0,0};
@@ -57,14 +61,13 @@ class tdDraw {
             campos = new_campos;
             camangle = new_camangle;
         }
-        unsigned char* getImg (int width,int height,bool bu=false) {
+        void getImg (uchar* iarr,int width,int height,bool bu=false) {
             display[0] = width;display[1] = height;
 
             frame++;
             int x = width;int y = height;
             double maxlen = 100;
 
-            iarr = new uchar [x*y*4];
             double* zbuf = new double [x*y];
             for (int i=0;i<x*y;i++) {zbuf[i]=maxlen;iarr[i*4+2]=sky[0];iarr[i*4+1]=sky[1];iarr[i*4+0]=sky[2];}
 
@@ -128,12 +131,9 @@ class tdDraw {
             }
 
             delete[] zbuf;
-            return iarr;
+            return;
         }
     private:
-        typedef std::array<double,3> tda;
-        typedef std::array<double,2> t2da;
-        typedef unsigned char uchar;
         void sortPolygon() {
         }
         tda pos_3t2d(tda p) {

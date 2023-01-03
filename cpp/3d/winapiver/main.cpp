@@ -19,7 +19,7 @@ tdDrawObject getmaze3d();
 std::vector<std::vector<unsigned char>> flmove;
 
 struct MazeOption {
-    bool wall = true;
+    bool wall = false;
 };
 
 MazeOption option;
@@ -154,7 +154,6 @@ void paintscreen(HWND hwnd) {
 	PAINTSTRUCT ps;
 	RECT rect;
 	static BITMAPINFO bmpInfo;
-	static unsigned char* lpPixel;
 	GetClientRect(hwnd, &rect);
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
@@ -164,7 +163,8 @@ void paintscreen(HWND hwnd) {
 	bmpInfo.bmiHeader.biPlanes=1;
 	bmpInfo.bmiHeader.biBitCount=32;
 	bmpInfo.bmiHeader.biCompression=BI_RGB;
-	lpPixel = tddraw.getImg(width,height,true);
+	unsigned char* lpPixel = new unsigned char [width*height*4];
+	tddraw.getImg(lpPixel,width,height,true);
 	hdc = GetDC(hwnd);
 	{ // 3d
 		{
@@ -186,12 +186,12 @@ void move(double length) {
 	tddraw.campos[1] += los[1];
 	double cx = tddraw.campos[0];
 	double cy = tddraw.campos[1];
-	// if (cy<flmove.size()&&bfx<flmove[0].size()&&flmove[std::floor(cy)][std::floor(bfx)]==0) {
-	// 	tddraw.campos[1] = bfy;
-	// }
-	// if (bfy<flmove.size()&&cx<flmove[0].size()&&flmove[std::floor(bfy)][std::floor(cx)]==0) {
-	// 	tddraw.campos[0] = bfx;
-	// }
+	if (cy<flmove.size()&&bfx<flmove[0].size()&&flmove[std::floor(cy)][std::floor(bfx)]==0) {
+		tddraw.campos[1] = bfy;
+	}
+	if (bfy<flmove.size()&&cx<flmove[0].size()&&flmove[std::floor(bfy)][std::floor(cx)]==0) {
+		tddraw.campos[0] = bfx;
+	}
 	// if (std::floor(tddraw.campos[0])==maze.goal[0]&&std::floor(tddraw.campos[1])==maze.goal[1]) {
 	// 	//startgoal();
 	// }
