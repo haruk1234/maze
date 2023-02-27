@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <iostream>
 #include <chrono>
-#include "../3d.h"
+#include "3d.h"
 #include "../../maze.h"
 
 tdDraw tddraw;
@@ -19,7 +19,7 @@ tdDrawObject getmaze3d();
 std::vector<std::vector<unsigned char>> flmove;
 
 struct MazeOption {
-    bool wall = false;
+    bool wall = true;
 };
 
 MazeOption option;

@@ -1,6 +1,6 @@
 compile:
-	g++ main.cpp -lgdi32 -o main -O3
+	g++ main.cpp -lgdi32 -o main -O3 -fopenmp
 compileO:
-	g++ main.cpp -lgdi32 -o main
+	g++ main.cpp -lgdi32 -o main -fopenmp
 run:
 	./main
