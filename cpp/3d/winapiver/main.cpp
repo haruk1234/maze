@@ -34,27 +34,27 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
-	case WM_KEYDOWN:
-		//std::cout << "\033[2K\033[1G" << "keydown " << wp << std::endl;
-		bool a;
-		switch (wp)
-		{
-			case 87:
-				move(0.1);
-			break;
-			case 83:
-				move(-0.1);
-			break;
-			case 68:
-				tddraw.camangle[0]+=0.1;
-			break;
-			case 65:
-				tddraw.camangle[0]-=0.1;
-			break;
-			default:
-			break;
-		}
-		return 0;
+	// case WM_KEYDOWN:
+	// 	//std::cout << "\033[2K\033[1G" << "keydown " << wp << std::endl;
+	// 	bool a;
+	// 	switch (wp)
+	// 	{
+	// 		case 87:
+	// 			move(0.1);
+	// 		break;
+	// 		case 83:
+	// 			move(-0.1);
+	// 		break;
+	// 		case 68:
+	// 			tddraw.camangle[0]+=0.1;
+	// 		break;
+	// 		case 65:
+	// 			tddraw.camangle[0]-=0.1;
+	// 		break;
+	// 		default:
+	// 		break;
+	// 	}
+	// 	return 0;
 	case WM_CREATE:
    		std::cout << "Neknaj 3D Maze Desktop" << std::endl;
 		showobject = getmaze3d();
@@ -150,6 +150,24 @@ tdDrawObject getmaze3d() {
 	return m3d;
 }
 void paintscreen(HWND hwnd) {
+	{
+		if (GetKeyState(0x57)<0) {
+    		//std::cout << std::endl << "w" << std::endl;
+			move(0.05);
+		}
+		if (GetKeyState(0x41)<0) {
+    		//std::cout << std::endl << "a" << std::endl;
+			tddraw.camangle[0]-=0.05;
+		}
+		if (GetKeyState(0x53)<0) {
+    		//std::cout << std::endl << "s" << std::endl;
+			move(-0.05);
+		}
+		if (GetKeyState(0x44)<0) {
+    		//std::cout << std::endl << "d" << std::endl;
+			tddraw.camangle[0]+=0.05;
+		}
+	}
 	HDC hdc;
 	PAINTSTRUCT ps;
 	RECT rect;
@@ -165,7 +183,7 @@ void paintscreen(HWND hwnd) {
 	bmpInfo.bmiHeader.biCompression=BI_RGB;
 	unsigned char* lpPixel = new unsigned char [width*height*4];
 	tddraw.getImg(lpPixel,width,height,true);
-	hdc = GetDC(hwnd);
+    hdc=BeginPaint(hwnd,&ps);
 	{ // 3d
 		{
 			end = std::chrono::system_clock::now();
@@ -176,6 +194,7 @@ void paintscreen(HWND hwnd) {
 		SetDIBitsToDevice(hdc,0,0,width,height,0,0,0,height,lpPixel,&bmpInfo,DIB_RGB_COLORS);
 	}
 	delete[] lpPixel;
+    InvalidateRect(hwnd,NULL,FALSE);
 	return;
 }
 void move(double length) {
