@@ -24,7 +24,12 @@ struct MazeOption {
 
 MazeOption option;
 tdDrawPolygon arraytopoly(std::array<int,12> a) {
-    return {{a[0],a[1],a[2]},{a[3],a[4],a[5]},{a[6],a[7],a[8]},{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}};
+    return {
+		{(double)a[0],(double)a[1],(double)a[2]},
+		{(double)a[3],(double)a[4],(double)a[5]},
+		{(double)a[6],(double)a[7],(double)a[8]},
+		{(unsigned char)a[9],(unsigned char)a[10],(unsigned char)a[11]}
+		};
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
