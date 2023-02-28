@@ -6,6 +6,7 @@
 
 tdDraw tddraw;
 tdDrawObject showobject;
+BITMAPINFO bmpInfo;
 std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 
@@ -78,6 +79,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,PSTR lpCmdLine,in
 	HWND hwnd;
 	MSG msg;
 	WNDCLASS winc;
+    bmpInfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+    bmpInfo.bmiHeader.biPlanes=1;
+    bmpInfo.bmiHeader.biBitCount=32;
+    bmpInfo.bmiHeader.biCompression=BI_RGB;
 
 	winc.style = CS_HREDRAW | CS_VREDRAW;
 	winc.lpfnWndProc = WndProc;
@@ -176,16 +181,11 @@ void paintscreen(HWND hwnd) {
 	HDC hdc;
 	PAINTSTRUCT ps;
 	RECT rect;
-	static BITMAPINFO bmpInfo;
 	GetClientRect(hwnd, &rect);
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
-	bmpInfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-	bmpInfo.bmiHeader.biWidth=width;
-	bmpInfo.bmiHeader.biHeight=height;
-	bmpInfo.bmiHeader.biPlanes=1;
-	bmpInfo.bmiHeader.biBitCount=32;
-	bmpInfo.bmiHeader.biCompression=BI_RGB;
+    bmpInfo.bmiHeader.biWidth=width;
+    bmpInfo.bmiHeader.biHeight=height;
 	unsigned char* lpPixel = new unsigned char [width*height*4];
 	tddraw.getImg(lpPixel,width,height);
     hdc=BeginPaint(hwnd,&ps);
