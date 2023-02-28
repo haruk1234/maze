@@ -125,8 +125,8 @@ tdDrawObject getmaze3d() {
 		for (int lx=0;lx<x;lx++) {
 			if (maze.maze[ly][lx]==0) {
 				if (option.wall) {
-					// m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx+1,ly,1,lx+1,ly+1,1,255,255,255}));
-					// m3d.insert(m3d.end(),arraytopoly({lx,ly+1,1,lx,ly,1,lx+1,ly+1,1,255,255,255}));
+					m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx+1,ly,1,lx+1,ly+1,1,255,255,255}));
+					m3d.insert(m3d.end(),arraytopoly({lx,ly+1,1,lx,ly,1,lx+1,ly+1,1,255,255,255}));
 					if (!(lx>0&&maze.maze[ly][lx-1]==0)) {
 						m3d.insert(m3d.end(),arraytopoly({lx,ly,0,lx,ly,1,lx,ly+1,0,255,255,255}));
 						m3d.insert(m3d.end(),arraytopoly({lx,ly,1,lx,ly+1,1,lx,ly+1,0,255,255,255}));
@@ -136,8 +136,8 @@ tdDrawObject getmaze3d() {
 						m3d.insert(m3d.end(),arraytopoly({lx+1,ly+1,0,lx,ly+1,0,lx+1,ly+1,1,255,255,255}));
 					}
                     if (!(lx<x-1&&maze.maze[ly][lx+1]==0)) {
-						m3d.insert(m3d.end(),arraytopoly({lx+1,ly+1,0,lx+1,ly+1,1,lx+1,ly,1,255,255,255}));
-						m3d.insert(m3d.end(),arraytopoly({lx+1,ly,0,lx+1,ly+1,0,lx+1,ly,1,255,255,255}));
+						m3d.insert(m3d.end(),arraytopoly({lx+1,ly+1,0,lx+1,ly,1,lx+1,ly+1,1,255,255,255}));
+						m3d.insert(m3d.end(),arraytopoly({lx+1,ly,0,lx+1,ly,1,lx+1,ly+1,0,255,255,255}));
 					}
 					if (!(ly>0&&maze.maze[ly-1][lx]==0)) {
 						m3d.insert(m3d.end(),arraytopoly({lx+1,ly,0,lx+1,ly,1,lx,ly,1,255,255,255}));
@@ -187,15 +187,15 @@ void paintscreen(HWND hwnd) {
 	bmpInfo.bmiHeader.biBitCount=32;
 	bmpInfo.bmiHeader.biCompression=BI_RGB;
 	unsigned char* lpPixel = new unsigned char [width*height*4];
-	tddraw.getImg(lpPixel,width,height,true);
+	tddraw.getImg(lpPixel,width,height);
     hdc=BeginPaint(hwnd,&ps);
 	{ // 3d
-		{
-			end = std::chrono::system_clock::now();
-			int msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-			std::cout << "\033[2K\033[1G" << "f" << tddraw.frame << " ms" << msec << " fps" << (double)1000/msec;
-			start = std::chrono::system_clock::now();
-		}
+		// {
+		// 	end = std::chrono::system_clock::now();
+		// 	int msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		// 	std::cout << "\033[2K\033[1G" << "f" << tddraw.frame << " ms" << msec << " fps" << (double)1000/msec;
+		// 	start = std::chrono::system_clock::now();
+		// }
 		SetDIBitsToDevice(hdc,0,0,width,height,0,0,0,height,lpPixel,&bmpInfo,DIB_RGB_COLORS);
 	}
 	delete[] lpPixel;

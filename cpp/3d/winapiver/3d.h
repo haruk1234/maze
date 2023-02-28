@@ -62,7 +62,7 @@ class tdDraw {
             campos = new_campos;
             camangle = new_camangle;
         }
-        void getImg (uchar* iarr,int width,int height,bool bu=false) {
+        void getImg (uchar* iarr,int width,int height) {
             display[0] = width;display[1] = height;
 
             frame++;
@@ -110,8 +110,7 @@ class tdDraw {
 
                 for (int iy=ymin;iy<ymax;iy++) {
                     for (int ix=xmin;ix<xmax;ix++) {
-                        int idex = iy*x+ix;
-                        if (bu) {idex = (height-iy-1)*x+ix;}
+                        int idex = (height-iy-1)*x+ix;
                         if (inclusion((t2da){(double)ix,(double)iy},{p1,p2,p3})) {
                             tda td = is_p({p1,(tda){(double)ix,(double)iy,0.0}},{p2,p3});
 
